@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Usuários (Admin/Empresa e Equipes)
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  name      String
+  role      UserRole   @default(TEAM_MEMBER)
+  company   Company?   @relation("company_users", fields: [companyId], references: [id])
+  companyId String?
+  team      Team?      @relation("team_members", fields: [teamId], references: [id])
+  teamId    String?
+  messages  Message[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([companyId])
+  @@index([teamId])
+}
+
+enum UserRole {
+  ADMIN
+  COMPANY_MANAGER
+  TEAM_LEADER
+  TEAM_MEMBER
+}
+
+// Empresas/Organizações
+model Company {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  cnpj      String        @unique
+  email     String        @unique
+  phone     String?
+  address   String?
+  city      String?
+  state     String?
+  users     User[]        @relation("company_users")
+  teams     Team[]        @relation("company_teams")
+  incidents Incident[]    @relation("company_incidents")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+// Equipes
+model Team {
+  id        String        @id @default(cuid())
+  name      String
+  company   Company       @relation("company_teams", fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String
+  members   User[]        @relation("team_members")
+  incidents Incident[]    @relation("team_incidents")
+  status    TeamStatus    @default(AVAILABLE)
+  location  String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+enum TeamStatus {
+  AVAILABLE
+  ON_CALL
+  IN_TRANSIT
+  ON_SITE
+  BUSY
+}
+
+// Ocorrências/Chamados
+model Incident {
+  id              String          @id @default(cuid())
+  title           String
+  description     String
+  priority        Priority        @default(NORMAL)
+  status          IncidentStatus  @default(PENDING
+  company         Company         @relation("company_incidents", fields: [companyId], references: [id], onDelete: Cascade)
+  companyId       String
+  team            Team?           @relation("team_incidents", fields: [teamId], references: [id])
+  teamId          String?
+  clientName      String
+  clientPhone     String?
+  clientEmail     String?
+  address         String
+  city            String
+  state           String
+  zipCode         String?
+  
+  // Timeline de Status
+  statusHistory   StatusHistory[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // Chat
+  messages        Message[]
+  
+  @@index([companyId])
+  @@index([teamId])
+  @@index([status])
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  PENDING
+  ASSIGNED
+  DEPARTED
+  ARRIVED
+  EVALUATING
+  REPAIRING
+  COMPLETED
+  CANCELLED
+}
+
+// Histórico de Status
+model StatusHistory {
+  id        String    @id @default(cuid())
+  incident  Incident  @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  incidentId String
+  status    IncidentStatus
+  timestamp DateTime  @default(now())
+  notes     String?
+
+  @@index([incidentId])
+}
+
+// Chat/Mensagens
+model Message {
+  id        String    @id @default(cuid())
+  content   String
+  sender    User      @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderId  String
+  incident  Incident  @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  incidentId String
+  createdAt DateTime  @default(now())
+
+  @@index([incidentId])
+  @@index([senderId])
+}

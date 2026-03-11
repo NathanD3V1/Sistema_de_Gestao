@@ -1,0 +1,244 @@
+{
+  "info": {
+    "_postman_id": "incident-management-api",
+    "name": "Sistema de Gestão de Ocorrências - API",
+    "description": "Coleção de endpoints para testar a API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Ocorrências",
+      "item": [
+        {
+          "name": "Listar Ocorrências",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/incidents?companyId=comp_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidents"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "comp_001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Ocorrência",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Vazamento de água\",\n  \"description\": \"Vazamento detectado na cozinha\",\n  \"priority\": \"HIGH\",\n  \"companyId\": \"comp_001\",\n  \"clientName\": \"João Silva\",\n  \"clientPhone\": \"(11) 98765-4321\",\n  \"clientEmail\": \"joao@email.com\",\n  \"address\": \"Rua das Flores, 123\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"zipCode\": \"01000-000\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/incidents",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidents"]
+            }
+          }
+        },
+        {
+          "name": "Obter Ocorrência",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/incidents/incident_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidents", "incident_001"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ARRIVED\",\n  \"notes\": \"Chegamos no local\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/incidents/incident_001/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidents", "incident_001", "status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Equipes",
+      "item": [
+        {
+          "name": "Listar Equipes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/teams?companyId=comp_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["teams"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "comp_001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar Equipes Disponíveis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/teams/available?companyId=comp_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["teams", "available"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "comp_001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Equipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Equipe D - Zona Centro\",\n  \"companyId\": \"comp_001\",\n  \"location\": \"São Paulo, SP\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teams",
+              "host": ["{{baseUrl}}"],
+              "path": ["teams"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mensagens",
+      "item": [
+        {
+          "name": "Listar Mensagens",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/messages?incidentId=incident_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages"],
+              "query": [
+                {
+                  "key": "incidentId",
+                  "value": "incident_001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Enviar Mensagem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"incidentId\": \"incident_001\",\n  \"content\": \"Estamos a caminho do local\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

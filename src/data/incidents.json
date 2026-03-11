@@ -1,0 +1,41 @@
+[
+  {
+    "id": "occ-1",
+    "teamId": "eqp-2",
+    "title": "Reparo Elétrico - Av. Paulista",
+    "address": "Av. Paulista, 1000",
+    "priority": "Alta",
+    "status": "PENDENTE",
+    "departedAt": null,
+    "arrivedAt": null,
+    "startedAt": null,
+    "finishedAt": null,
+    "updatedAt": "2026-03-05T12:46:07.347Z"
+  },
+  {
+    "id": "occ-1772581785314",
+    "teamId": "eqp-1",
+    "title": "Casa de Nengue ",
+    "address": "Barra, Salvador, Região Geográfica Imediata de Salvador, Região Metropolitana de Salvador, Região Geográfica Intermediária de Salvador, Bahia, 40140-320, Brasil",
+    "priority": "CRITICAL",
+    "status": "CONCLUIDO",
+    "departedAt": "2026-03-04T12:17:42.218Z",
+    "arrivedAt": "2026-03-04T12:18:28.805Z",
+    "startedAt": "2026-03-04T12:18:34.747Z",
+    "finishedAt": "2026-03-04T12:18:41.385Z",
+    "updatedAt": "2026-03-06T15:30:06.625Z"
+  },
+  {
+    "id": "occ-1772810527640",
+    "teamId": "eqp-3",
+    "title": "Casa de Nengue ",
+    "address": "Barra, Salvador, Região Geográfica Imediata de Salvador, Região Metropolitana de Salvador, Região Geográfica Intermediária de Salvador, Bahia, 40140-320, Brasil",
+    "priority": "CRITICAL",
+    "status": "PENDENTE",
+    "departedAt": null,
+    "arrivedAt": null,
+    "startedAt": null,
+    "finishedAt": null,
+    "updatedAt": "2026-03-06T15:22:07.444Z"
+  }
+]

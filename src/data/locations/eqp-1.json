@@ -1,0 +1,11 @@
+{
+  "teamId": "eqp-1",
+  "latitude": -12.959533,
+  "longitude": -38.435692,
+  "accuracy": 14.9,
+  "speed": null,
+  "heading": null,
+  "battery": null,
+  "timestamp": "2026-03-06T12:15:09.780Z",
+  "source": "mobile_app"
+}

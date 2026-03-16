@@ -84,19 +84,19 @@ const adminToServer: Record<Exclude<AdminStatus, 'ALL'>, ServerStatus> = {
   COMPLETED: 'CONCLUIDO',
 };
 
-// ====================== CONFIGS DE COR ======================
+// ====================== CONFIGS DE COR (DARK MODE) ======================
 const statusConfig: Record<string, { label: string; color: string; textColor: string }> = {
-  PENDING: { label: 'Aguardando', color: 'bg-yellow-100', textColor: 'text-yellow-800' },
-  IN_TRANSIT: { label: 'Em Trânsito', color: 'bg-blue-100', textColor: 'text-blue-800' },
-  ON_SITE: { label: 'No Local', color: 'bg-orange-100', textColor: 'text-orange-800' },
-  COMPLETED: { label: 'Concluído', color: 'bg-green-100', textColor: 'text-green-800' },
+  PENDING: { label: 'Aguardando', color: 'bg-amber-500/15', textColor: 'text-amber-400' },
+  IN_TRANSIT: { label: 'Em Trânsito', color: 'bg-sky-500/15', textColor: 'text-sky-400' },
+  ON_SITE: { label: 'No Local', color: 'bg-orange-500/15', textColor: 'text-orange-400' },
+  COMPLETED: { label: 'Concluído', color: 'bg-emerald-500/15', textColor: 'text-emerald-400' },
 };
 
 const priorityConfig: Record<string, { label: string; color: string; textColor: string }> = {
-  LOW: { label: 'Baixa', color: 'bg-gray-100', textColor: 'text-gray-800' },
-  NORMAL: { label: 'Normal', color: 'bg-blue-100', textColor: 'text-blue-800' },
-  HIGH: { label: 'Alta', color: 'bg-orange-100', textColor: 'text-orange-800' },
-  CRITICAL: { label: 'Crítica', color: 'bg-red-100', textColor: 'text-red-800' },
+  LOW: { label: 'Baixa', color: 'bg-slate-500/15', textColor: 'text-slate-400' },
+  NORMAL: { label: 'Normal', color: 'bg-sky-500/15', textColor: 'text-sky-400' },
+  HIGH: { label: 'Alta', color: 'bg-orange-500/15', textColor: 'text-orange-400' },
+  CRITICAL: { label: 'Crítica', color: 'bg-red-500/15', textColor: 'text-red-400' },
 };
 
 function normalizePriority(p: string): keyof typeof priorityConfig {
@@ -531,19 +531,20 @@ export default function Page() {
   }, [incidents]);
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-[#0a0e1a]">
       {/* Header */}
-      <header className="bg-slate-950 border-b border-slate-700 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <header className="bg-[#0d1117]/90 backdrop-blur-xl border-b border-white/[0.06] sticky top-0 z-50">
+        <div className="max-w-[1400px] mx-auto px-6 py-3 flex justify-between items-center">
           <Link href="/admin" className="flex items-center gap-3">
-            <div className="w-20 h-20 rounded-lg flex items-center justify-center overflow-hidden">
-              <img 
-                src="https://www.neoenergia.com/documents/d/bahia/ImagemCoelbaNeo" 
-                alt="Neoenergia" 
-                className="h-full w-full object-contain"
-              />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
-            <span className="text-white font-bold text-lg">Painel Admin</span>
+            <div>
+              <span className="text-white font-semibold text-base tracking-tight">Central de Operações</span>
+              <p className="text-[11px] text-slate-500 font-medium -mt-0.5">Painel Administrativo</p>
+            </div>
           </Link>
 
           <button
@@ -551,129 +552,138 @@ export default function Page() {
               localStorage.removeItem('usuarioLogado');
               router.push('/');
             }}
-            className="text-red-400 text-sm hover:underline"
+            className="flex items-center gap-2 text-slate-400 text-sm hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-white/[0.04]"
           >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
             Sair
           </button>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-[1400px] mx-auto px-6 py-8">
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-blue-500 hover-lift">
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">📋</span>
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="card-dark p-5 hover-lift stat-glow">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-sky-500/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
               </div>
-              <div className="text-4xl font-bold mb-1 text-slate-800">{incidents.length}</div>
-              <p className="text-slate-500 text-sm font-medium">Total de Ocorrências</p>
+              <div>
+                <div className="text-2xl font-bold text-white">{incidents.length}</div>
+                <p className="text-slate-500 text-xs font-medium">Total Ocorrências</p>
+              </div>
             </div>
           </div>
 
-          <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-orange-500 hover-lift">
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">⏳</span>
+          <div className="card-dark p-5 hover-lift stat-glow">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">
+                  {incidents.filter((i) => i.uiStatus === 'PENDING').length}
                 </div>
+                <p className="text-slate-500 text-xs font-medium">Aguardando</p>
               </div>
-              <div className="text-4xl font-bold mb-1 text-slate-800">
-                {incidents.filter((i) => i.uiStatus === 'PENDING').length}
-              </div>
-              <p className="text-slate-500 text-sm font-medium">Aguardando</p>
             </div>
           </div>
 
-          {displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? (
-            <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-red-500 hover-lift bg-red-50">
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center">
-                    <span className="text-2xl">⚠️</span>
-                  </div>
-                </div>
-                <div className="text-4xl font-bold mb-1 text-red-700">
+          <div className="card-dark p-5 hover-lift stat-glow">
+            <div className="flex items-center gap-4">
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? 'bg-red-500/10' : 'bg-emerald-500/10'
+              }`}>
+                <svg className={`w-5 h-5 ${
+                  displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? 'text-red-400' : 'text-emerald-400'
+                }`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <div className={`text-2xl font-bold ${
+                  displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? 'text-red-400' : 'text-white'
+                }`}>
                   {displayTeams.filter((t) => t.status === 'AVAILABLE').length}
                 </div>
-                <p className="text-red-500 text-sm font-medium">Nenhuma Equipe Disponível!</p>
+                <p className={`text-xs font-medium ${
+                  displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? 'text-red-400/70' : 'text-slate-500'
+                }`}>
+                  {displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? 'Nenhuma Disponível!' : 'Equipes Disponíveis'}
+                </p>
               </div>
             </div>
-          ) : (
-            <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-green-500 hover-lift">
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center">
-                    <span className="text-2xl">✅</span>
-                  </div>
-                </div>
-                <div className="text-4xl font-bold mb-1 text-slate-800">
-                  {displayTeams.filter((t) => t.status === 'AVAILABLE').length}
-                </div>
-                <p className="text-slate-500 text-sm font-medium">Equipes Disponíveis</p>
-              </div>
-            </div>
-          )}
+          </div>
 
-          <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-violet-500 hover-lift">
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-violet-50 text-violet-600 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">👥</span>
-                </div>
+          <div className="card-dark p-5 hover-lift stat-glow">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
               </div>
-              <div className="text-4xl font-bold mb-1 text-slate-800">{displayTeams.length}</div>
-              <p className="text-slate-500 text-sm font-medium">Total de Equipes</p>
+              <div>
+                <div className="text-2xl font-bold text-white">{displayTeams.length}</div>
+                <p className="text-slate-500 text-xs font-medium">Total de Equipes</p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Dashboard Charts */}
         {chartData.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div className="corporate-card-dark p-6">
-              <h3 className="text-xl font-bold mb-4">Distribuição de Status</h3>
-              <div className="h-64 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+            <div className="card-dark p-5">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Distribuição de Status</h3>
+              <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={chartData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
+                      innerRadius={55}
+                      outerRadius={75}
+                      paddingAngle={4}
                       dataKey="value"
+                      strokeWidth={0}
                     >
                       {chartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <RechartsTooltip 
-                      contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
-                      itemStyle={{ color: '#fff' }}
+                      contentStyle={{ backgroundColor: 'rgba(17, 24, 39, 0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', color: '#e2e8f0', fontSize: '13px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
+                      itemStyle={{ color: '#e2e8f0' }}
                     />
-                    <Legend />
+                    <Legend 
+                      iconSize={8}
+                      wrapperStyle={{ fontSize: '12px', color: '#94a3b8' }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            <div className="corporate-card-dark p-6">
-              <h3 className="text-xl font-bold mb-4">Volume por Categoria</h3>
-              <div className="h-64 w-full">
+            <div className="card-dark p-5">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Volume por Categoria</h3>
+              <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                    <XAxis dataKey="name" stroke="#475569" fontSize={11} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#475569" fontSize={11} tickLine={false} axisLine={false} allowDecimals={false} />
                     <RechartsTooltip 
-                      cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                      contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                      cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                      contentStyle={{ backgroundColor: 'rgba(17, 24, 39, 0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', color: '#e2e8f0', fontSize: '13px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
                     />
-                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                       {chartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -685,47 +695,50 @@ export default function Page() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Incidents List */}
           <div className="lg:col-span-2">
-            <div className="corporate-card-dark p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Ocorrências</h2>
+            <div className="card-dark p-5">
+              <div className="flex justify-between items-center mb-5">
+                <h2 className="text-base font-semibold text-slate-200">Ocorrências</h2>
                 <button
                   onClick={() => setIsCreateOpen(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-colors font-medium shadow-sm"
+                  className="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium hover:shadow-lg hover:shadow-sky-500/20"
                 >
-                  ➕ Nova Ocorrência
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Nova Ocorrência
                 </button>
               </div>
 
               {/* Filtros */}
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-1.5 mb-5">
                 {(['ALL', 'PENDING', 'IN_TRANSIT', 'ON_SITE', 'COMPLETED'] as AdminStatus[]).map(
                   (status) => (
                     <button
                       key={status}
                       onClick={() => setFilterStatus(status)}
-                      className={`px-4 py-2 rounded-lg transition-all text-sm font-medium border ${
+                      className={`px-3 py-1.5 rounded-lg transition-all text-xs font-medium ${
                         filterStatus === status
-                          ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
-                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700'
+                          ? 'bg-sky-600/20 text-sky-400 border border-sky-500/30'
+                          : 'bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-slate-300 border border-transparent'
                       }`}
                     >
-                      {status === 'ALL' ? 'Todas' : status === 'PENDING' ? '⏳ Aguardando' : status === 'IN_TRANSIT' ? '🚗 Em Trânsito' : status === 'ON_SITE' ? '📍 No Local' : '✅ Concluído'}
+                      {status === 'ALL' ? 'Todas' : status === 'PENDING' ? 'Aguardando' : status === 'IN_TRANSIT' ? 'Em Trânsito' : status === 'ON_SITE' ? 'No Local' : 'Concluído'}
                     </button>
                   )
                 )}
               </div>
 
               {/* Lista */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {isLoading && incidents.length === 0 && (
-                  <div className="text-slate-400">Carregando ocorrências...</div>
+                  <div className="text-slate-500 text-sm py-8 text-center">Carregando ocorrências...</div>
                 )}
 
                 {error && (
-                  <div className="rounded border border-red-800 bg-red-950/40 px-3 py-2 text-red-300">
+                  <div className="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-red-400 text-sm">
                     Erro ao carregar: {String((error as any)?.message ?? error)}
                   </div>
                 )}
@@ -739,28 +752,28 @@ export default function Page() {
                     <div
                       key={incident.id}
                       onClick={() => setSelectedId(incident.id)}
-                      className={`group p-4 rounded-xl border cursor-pointer transition-colors ${
+                      className={`group p-3.5 rounded-xl border cursor-pointer transition-all ${
                         selectedId === incident.id
-                          ? 'bg-blue-900/40 border-blue-500'
-                          : 'bg-slate-800/60 border-slate-700 hover:border-slate-500 hover:bg-slate-700/80'
+                          ? 'bg-sky-500/[0.08] border-sky-500/30'
+                          : 'bg-white/[0.02] border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04]'
                       }`}
                     >
                       <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h3 className="font-bold mb-2 group-hover:text-blue-300 transition-colors text-slate-100">{incident.title}</h3>
-                          <div className="flex gap-2 flex-wrap">
-                            <span className={`px-2 py-1 rounded text-sm font-semibold ${st.color} ${st.textColor}`}>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-sm mb-2 text-slate-200 group-hover:text-white transition-colors truncate">{incident.title}</h3>
+                          <div className="flex gap-1.5 flex-wrap">
+                            <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${st.color} ${st.textColor}`}>
                               {st.label}
                             </span>
-                            <span className={`px-2 py-1 rounded text-sm font-semibold ${pr.color} ${pr.textColor}`}>
+                            <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${pr.color} ${pr.textColor}`}>
                               {pr.label}
                             </span>
                           </div>
                         </div>
 
-                        <div className="text-right">
-                          <p className="text-sm text-slate-300 font-medium">{incident.teamLabel}</p>
-                          <p className="text-xs text-slate-400 mt-1">
+                        <div className="text-right ml-3 flex-shrink-0">
+                          <p className="text-xs text-slate-400 font-medium">{incident.teamLabel}</p>
+                          <p className="text-[10px] text-slate-600 mt-1">
                             {Math.floor((Date.now() - new Date(incident.updatedAt).getTime()) / 60000)} min atrás
                           </p>
                         </div>
@@ -770,80 +783,95 @@ export default function Page() {
                 })}
 
                 {filteredIncidents.length === 0 && !isLoading && (
-                  <div className="text-slate-400">Nenhuma ocorrência para o filtro selecionado.</div>
+                  <div className="text-slate-600 text-sm py-8 text-center">Nenhuma ocorrência para o filtro selecionado.</div>
                 )}
               </div>
             </div>
           </div>
 
+          {/* Detail Panel */}
           <div>
-            <div className="corporate-card p-6 sticky top-24">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
-                  <span className="text-lg">📋</span>
+            <div className="card-dark-elevated p-5 sticky top-20">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 bg-sky-500/10 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 </div>
-                <h3 className="text-xl font-bold text-slate-800">Detalhes da Ocorrência</h3>
+                <h3 className="text-sm font-semibold text-slate-300">Detalhes da Ocorrência</h3>
               </div>
 
               {!selectedIncident ? (
-                <div className="text-slate-500">Selecione uma ocorrência na lista ao lado.</div>
+                <div className="text-slate-600 text-sm text-center py-6">Selecione uma ocorrência.</div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div>
-                    <label className="text-slate-500 text-sm">Título</label>
-                    <p className="text-slate-800 font-semibold">{selectedIncident.title}</p>
+                    <label className="text-slate-500 text-[11px] uppercase tracking-wider font-medium">Título</label>
+                    <p className="text-slate-200 font-medium text-sm mt-0.5">{selectedIncident.title}</p>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 text-sm">Status</label>
-                    <p className={`px-3 py-1 rounded-full text-sm font-semibold inline-block ${getStatusColor(selectedIncident.uiStatus).color} ${getStatusColor(selectedIncident.uiStatus).textColor}`}>
+                    <label className="text-slate-500 text-[11px] uppercase tracking-wider font-medium">Status</label>
+                    <p className={`mt-1 px-2.5 py-1 rounded-md text-xs font-semibold inline-block ${getStatusColor(selectedIncident.uiStatus).color} ${getStatusColor(selectedIncident.uiStatus).textColor}`}>
                       {getStatusColor(selectedIncident.uiStatus).label}
                     </p>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 text-sm">Prioridade</label>
-                    <p className={`px-3 py-1 rounded-full text-sm font-semibold inline-block ${getPriorityColor(normalizePriority(selectedIncident.priority)).color} ${getPriorityColor(normalizePriority(selectedIncident.priority)).textColor}`}>
+                    <label className="text-slate-500 text-[11px] uppercase tracking-wider font-medium">Prioridade</label>
+                    <p className={`mt-1 px-2.5 py-1 rounded-md text-xs font-semibold inline-block ${getPriorityColor(normalizePriority(selectedIncident.priority)).color} ${getPriorityColor(normalizePriority(selectedIncident.priority)).textColor}`}>
                       {getPriorityColor(normalizePriority(selectedIncident.priority)).label}
                     </p>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 text-sm">Equipe Atribuída</label>
-                    <p className="text-slate-800 font-semibold">{selectedIncident.teamLabel}</p>
+                    <label className="text-slate-500 text-[11px] uppercase tracking-wider font-medium">Equipe</label>
+                    <p className="text-slate-200 font-medium text-sm mt-0.5">{selectedIncident.teamLabel}</p>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 text-sm">Endereço</label>
-                    <p className="text-slate-800 font-semibold">{selectedIncident.address}</p>
+                    <label className="text-slate-500 text-[11px] uppercase tracking-wider font-medium">Endereço</label>
+                    <p className="text-slate-300 text-sm mt-0.5">{selectedIncident.address}</p>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 text-sm">Última Atualização</label>
-                    <p className="text-slate-800 font-semibold">
+                    <label className="text-slate-500 text-[11px] uppercase tracking-wider font-medium">Atualização</label>
+                    <p className="text-slate-400 text-xs mt-0.5">
                       {new Date(selectedIncident.updatedAt).toLocaleString('pt-BR', { timeZone: 'America/Bahia' })}
                     </p>
                   </div>
 
-                  {/* Botões de ação */}
-                  <div className="flex flex-col gap-3 pt-2">
+                  {/* Ações */}
+                  <div className="flex flex-col gap-2 pt-3 border-t border-white/[0.06]">
                     <button 
                       onClick={handleEditClick}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl transition-colors font-medium shadow-sm"
+                      className="w-full flex items-center justify-center gap-2 bg-sky-600/20 hover:bg-sky-600/30 text-sky-400 py-2 rounded-lg transition-all text-sm font-medium"
                     >
-                      ✏️ Editar Ocorrência
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Editar
                     </button>
                     <button 
                       onClick={handleDeleteIncident}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-xl transition-colors font-medium shadow-sm"
+                      className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 py-2 rounded-lg transition-all text-sm font-medium"
                     >
-                      🗑️ Excluir
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Excluir
                     </button>
                     <button 
                       onClick={handleToggleMap}
-                      className={`w-full py-2.5 rounded-xl transition-colors ${showMap ? 'bg-slate-200 text-slate-800' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'} font-medium shadow-sm`}
+                      className={`w-full flex items-center justify-center gap-2 py-2 rounded-lg transition-all text-sm font-medium ${
+                        showMap ? 'bg-white/[0.08] text-slate-300' : 'bg-white/[0.04] hover:bg-white/[0.08] text-slate-400'
+                      }`}
                     >
-                      {showMap ? '🗺️ Ocultar Mapa' : '📍 Ver Localização'}
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {showMap ? 'Ocultar Mapa' : 'Ver Localização'}
                     </button>
                   </div>
 
@@ -863,108 +891,119 @@ export default function Page() {
         </div>
 
         {/* Teams Section */}
-        <div className="mt-8">
+        <div className="mt-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Equipes em Operação</h2>
+            <h2 className="text-base font-semibold text-slate-200">Equipes em Operação</h2>
             <button
               onClick={() => handleOpenNewTeam()}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-colors font-medium shadow-sm"
+              className="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium hover:shadow-lg hover:shadow-sky-500/20"
             >
-              ➕ Nova Equipe
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Nova Equipe
             </button>
           </div>
           
           {/* Loading/Error state for teams */}
           {teamsLoading && (
-            <div className="text-slate-400 mb-4">Carregando equipes...</div>
+            <div className="text-slate-500 text-sm mb-4">Carregando equipes...</div>
           )}
           
           {teamsError && (
-            <div className="rounded border border-red-800 bg-red-950/40 px-3 py-2 text-red-300 mb-4">
+            <div className="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-red-400 text-sm mb-4">
               Erro ao carregar equipes
             </div>
           )}
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {displayTeams.map((team) => (
-              <div key={team.id} className="group relative overflow-hidden corporate-card p-6 hover-lift border border-slate-200">
-                <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center">
-                        <span className="text-xl">👷</span>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-slate-800">{team.name}</h3>
-                        <p className="text-xs text-slate-500">{team.members} membros</p>
-                      </div>
+              <div key={team.id} className="card-dark p-4 hover-lift">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 bg-slate-700/50 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${team.status === 'AVAILABLE' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-orange-500/20 text-orange-400 border border-orange-500/30'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${team.status === 'AVAILABLE' ? 'bg-green-400' : 'bg-orange-400'} ${team.status === 'AVAILABLE' ? 'animate-pulse' : ''}`}></span>
-                      {team.status === 'AVAILABLE' ? 'Disponível' : 'Ocupada'}
-                    </span>
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-200">{team.name}</h3>
+                      <p className="text-[10px] text-slate-500">{team.members} membros</p>
+                    </div>
                   </div>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1 ${team.status === 'AVAILABLE' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'}`}>
+                    <span className={`w-1 h-1 rounded-full ${team.status === 'AVAILABLE' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
+                    {team.status === 'AVAILABLE' ? 'Disponível' : 'Ocupada'}
+                  </span>
+                </div>
 
-                  <div className="space-y-2 text-slate-600 mt-4">
-                    <p className="flex items-center gap-2 text-sm">
-                      <span className="text-slate-400">🚗</span>
-                      <span className="truncate">{(team as any).vehicle || 'Não atribuído'}</span>
-                    </p>
-                    <p className="flex items-center gap-2 text-sm">
-                      <span className="text-slate-400">🔖</span>
-                      <span className="font-mono bg-slate-100 text-slate-600 px-1 rounded">{(team as any).matricula || 'Sem Matr.'}</span>
-                    </p>
-                    <p className="flex items-center gap-2 text-sm">
-                      <span className="text-slate-400">📍</span>
-                      <span>{(team as any).location || 'Não definida'}</span>
-                    </p>
-                    {(team as any).phone && (
-                      <p className="flex items-center gap-2 text-sm">
-                        <span className="text-slate-400">📞</span>
-                        <span>{(team as any).phone}</span>
-                      </p>
-                    )}
-                  </div>
+                <div className="space-y-1.5 text-slate-400 mt-3">
+                  <p className="flex items-center gap-2 text-xs">
+                    <svg className="w-3 h-3 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    <span className="truncate">{(team as any).vehicle || 'Sem veículo'}</span>
+                  </p>
+                  <p className="flex items-center gap-2 text-xs">
+                    <svg className="w-3 h-3 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    <span className="font-mono text-slate-500 bg-white/[0.04] px-1 rounded text-[10px]">{(team as any).matricula || '—'}</span>
+                  </p>
+                  <p className="flex items-center gap-2 text-xs">
+                    <svg className="w-3 h-3 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="truncate">{(team as any).location || 'Não definida'}</span>
+                  </p>
+                </div>
 
-                  <div className="flex gap-2 mt-5">
-                    <button 
-                      onClick={() => {
-                        // Selecionar a ocorrência da equipe para ativar o chat correto
-                        const teamIncident = incidents.find(i => i.teamId === team.id && i.status !== 'CONCLUIDO');
-                        if (teamIncident) {
-                          setSelectedId(teamIncident.id);
-                        }
-                      }}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl transition-colors text-sm font-medium shadow-sm"
-                    >
-                      💬 Chat
-                    </button>
-                    <button 
-                      onClick={() => handleEditTeam(team as TeamServer)}
-                      className="px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2 rounded-xl transition-colors text-sm shadow-sm"
-                    >
-                      ✏️
-                    </button>
-                  </div>
+                <div className="flex gap-2 mt-4">
+                  <button 
+                    onClick={() => {
+                      const teamIncident = incidents.find(i => i.teamId === team.id && i.status !== 'CONCLUIDO');
+                      if (teamIncident) {
+                        setSelectedId(teamIncident.id);
+                      }
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600/15 hover:bg-sky-600/25 text-sky-400 py-1.5 rounded-lg transition-all text-xs font-medium"
+                  >
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Chat
+                  </button>
+                  <button 
+                    onClick={() => handleEditTeam(team as TeamServer)}
+                    className="px-3 bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 py-1.5 rounded-lg transition-all text-xs"
+                  >
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             ))}
             
             {displayTeams.length === 0 && !teamsLoading && (
-              <div className="col-span-full text-slate-400 text-center py-8">
-                Nenhuma equipe cadastrada. Clique em "+ Nova Equipe" para adicionar.
+              <div className="col-span-full text-slate-600 text-sm text-center py-8">
+                Nenhuma equipe cadastrada.
               </div>
             )}
           </div>
         </div>
 
-        {/* Chat com a Equipe */}
-        <div className="mt-8 mb-8 corporate-card-dark p-6">
+        {/* Chat */}
+        <div className="mt-6 mb-8 card-dark p-5">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
+              <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
               Chat com a Equipe
               {selectedIncident && (
-                <span className="text-sm font-normal text-slate-400 ml-2">
+                <span className="text-xs font-normal text-slate-500 ml-1">
                   — {selectedIncident.title}
                 </span>
               )}
@@ -982,28 +1021,31 @@ export default function Page() {
 
       {/* MODAL - Nova Ocorrência */}
       {isCreateOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
-                <span className="text-lg">➕</span>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-[#111827] border border-white/[0.06] rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 bg-sky-500/10 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-800">Nova Ocorrência</h3>
+              <h3 className="text-base font-semibold text-slate-200">Nova Ocorrência</h3>
             </div>
 
-            <form className="space-y-4" onSubmit={handleCreateIncident}>
+            <form className="space-y-3" onSubmit={handleCreateIncident}>
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Título</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Título</label>
                 <input
-                  className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                   required
+                  placeholder="Título da ocorrência"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Endereço</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Endereço</label>
                 <AddressAutocomplete
                   value={form.address}
                   onChange={(address) => setForm((f) => ({ ...f, address }))}
@@ -1013,9 +1055,9 @@ export default function Page() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Prioridade</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Prioridade</label>
                   <select
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={form.priority}
                     onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as any }))}
                   >
@@ -1027,9 +1069,9 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-600 font-medium mb-1">Status inicial</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Status</label>
                   <select
-                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={form.uiStatus}
                     onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
                   >
@@ -1041,9 +1083,9 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Equipe</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Equipe</label>
                   <select
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={form.teamId}
                     onChange={(e) => setForm((f) => ({ ...f, teamId: e.target.value }))}
                   >
@@ -1056,17 +1098,17 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
+              <div className="flex justify-end gap-2 pt-3">
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors font-medium"
+                  className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
+                  className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
                 >
                   Criar Ocorrência
                 </button>
@@ -1078,20 +1120,22 @@ export default function Page() {
 
       {/* MODAL - Editar Ocorrência */}
       {isEditOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
-                <span className="text-lg">✏️</span>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-[#111827] border border-white/[0.06] rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
               </div>
-              <h3 className="text-xl font-bold text-white">Editar Ocorrência</h3>
+              <h3 className="text-base font-semibold text-slate-200">Editar Ocorrência</h3>
             </div>
 
-            <form className="space-y-4" onSubmit={handleUpdateIncident}>
+            <form className="space-y-3" onSubmit={handleUpdateIncident}>
               <div>
-                <label className="block text-sm text-slate-600 font-medium mb-1">Título</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Título</label>
                 <input
-                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                   required
@@ -1099,7 +1143,7 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Endereço</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Endereço</label>
                 <AddressAutocomplete
                   value={form.address}
                   onChange={(address) => setForm((f) => ({ ...f, address }))}
@@ -1109,9 +1153,9 @@ export default function Page() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Prioridade</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Prioridade</label>
                   <select
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={form.priority}
                     onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as any }))}
                   >
@@ -1123,9 +1167,9 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-600 font-medium mb-1">Status</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Status</label>
                   <select
-                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={form.uiStatus}
                     onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
                   >
@@ -1137,9 +1181,9 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Equipe</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Equipe</label>
                   <select
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={form.teamId}
                     onChange={(e) => setForm((f) => ({ ...f, teamId: e.target.value }))}
                   >
@@ -1152,17 +1196,17 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
+              <div className="flex justify-end gap-2 pt-3">
                 <button
                   type="button"
                   onClick={() => setIsEditOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors font-medium"
+                  className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
+                  className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
                 >
                   Salvar Alterações
                 </button>
@@ -1174,30 +1218,34 @@ export default function Page() {
 
       {/* MODAL - Gerenciar Equipes */}
       {isTeamModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-cyan-50 text-cyan-600 rounded-xl flex items-center justify-center">
-                  <span className="text-lg">👥</span>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-[#111827] border border-white/[0.06] rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 bg-violet-500/10 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
                 </div>
-                <h3 className="text-xl font-bold text-slate-800">
+                <h3 className="text-base font-semibold text-slate-200">
                   {selectedTeamId ? 'Editar Equipe' : 'Nova Equipe'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsTeamModalOpen(false)}
-                className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-colors"
+                className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-500 hover:text-slate-300 flex items-center justify-center transition-all"
               >
-                ✕
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
-            <form className="space-y-4" onSubmit={selectedTeamId ? handleUpdateTeam : handleCreateTeam}>
+            <form className="space-y-3" onSubmit={selectedTeamId ? handleUpdateTeam : handleCreateTeam}>
               <div>
-                <label className="block text-sm text-slate-600 font-medium mb-1">ID da Equipe</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">ID da Equipe</label>
                 <input
-                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600 disabled:opacity-50"
                   value={teamForm.id}
                   onChange={(e) => setTeamForm((f) => ({ ...f, id: e.target.value }))}
                   required
@@ -1205,14 +1253,14 @@ export default function Page() {
                   placeholder="ex: eqp-001"
                 />
                 {!selectedTeamId && (
-                  <p className="text-xs text-slate-500 mt-1">ID único para identificar a equipe</p>
+                  <p className="text-[10px] text-slate-600 mt-1">ID único para identificar a equipe</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm text-slate-600 font-medium mb-1">Nome da Equipe</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Nome da Equipe</label>
                 <input
-                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
                   value={teamForm.name}
                   onChange={(e) => setTeamForm((f) => ({ ...f, name: e.target.value }))}
                   required
@@ -1221,9 +1269,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-600 font-medium mb-1">Matrícula</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Matrícula</label>
                 <input
-                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
                   value={teamForm.matricula}
                   onChange={(e) => setTeamForm((f) => ({ ...f, matricula: e.target.value }))}
                   placeholder="ex: 1001"
@@ -1232,9 +1280,9 @@ export default function Page() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm text-slate-600 font-medium mb-1">Status</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Status</label>
                   <select
-                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={teamForm.status}
                     onChange={(e) => setTeamForm((f) => ({ ...f, status: e.target.value }))}
                   >
@@ -1247,11 +1295,11 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-600 font-medium mb-1">Número de Membros</label>
+                  <label className="block text-xs text-slate-500 font-medium mb-1">Membros</label>
                   <input
                     type="number"
                     min="1"
-                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
                     value={teamForm.members}
                     onChange={(e) => setTeamForm((f) => ({ ...f, members: parseInt(e.target.value) || 1 }))}
                     required
@@ -1260,9 +1308,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-600 font-medium mb-1">Localização</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Localização</label>
                 <input
-                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
                   value={teamForm.location}
                   onChange={(e) => setTeamForm((f) => ({ ...f, location: e.target.value }))}
                   placeholder="ex: Zona Sul"
@@ -1270,9 +1318,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-600 font-medium mb-1">Veículo</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Veículo</label>
                 <input
-                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
                   value={teamForm.vehicle}
                   onChange={(e) => setTeamForm((f) => ({ ...f, vehicle: e.target.value }))}
                   placeholder="ex: Fiat Strada - ABC-1234"
@@ -1280,36 +1328,39 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-600 font-medium mb-1">Telefone</label>
+                <label className="block text-xs text-slate-500 font-medium mb-1">Telefone</label>
                 <input
-                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
                   value={teamForm.phone}
                   onChange={(e) => setTeamForm((f) => ({ ...f, phone: e.target.value }))}
                   placeholder="ex: (11) 99999-0001"
                 />
               </div>
 
-              <div className="flex justify-between gap-3 pt-4">
+              <div className="flex justify-between gap-2 pt-3">
                 {selectedTeamId && (
                   <button
                     type="button"
                     onClick={() => handleDeleteTeam(selectedTeamId)}
-                    className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-colors shadow-sm"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-all"
                   >
-                    🗑️ Excluir
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Excluir
                   </button>
                 )}
-                <div className="flex gap-3 ml-auto">
+                <div className="flex gap-2 ml-auto">
                   <button
                     type="button"
                     onClick={() => setIsTeamModalOpen(false)}
-                    className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors font-medium"
+                    className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
                   >
                     {selectedTeamId ? 'Salvar' : 'Criar'}
                   </button>

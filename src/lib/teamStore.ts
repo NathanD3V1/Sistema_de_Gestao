@@ -6,6 +6,7 @@ export type TeamStatus = 'AVAILABLE' | 'ON_CALL' | 'IN_TRANSIT' | 'ON_SITE' | 'B
 export type Team = {
   id: string;
   name: string;
+  matricula?: string;
   companyId: string;
   status: TeamStatus;
   location?: string;

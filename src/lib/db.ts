@@ -28,7 +28,7 @@ import {
 } from './teamStore';
 
 // Determina qual backend usar
-const USE_SUPABASE = process.env.USE_SUPABASE === 'true';
+const USE_SUPABASE = String(process.env.USE_SUPABASE).trim() === 'true';
 
 /**
  * ==================== INCIDENTS ====================

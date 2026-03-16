@@ -227,9 +227,14 @@ export default function TeamPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 p-4 md:p-8">
+    <div className="min-h-screen bg-slate-900 p-4 md:p-8 relative overflow-hidden text-slate-100">
+      {/* Background blobs */}
+      <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob pointer-events-none"></div>
+      <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000 pointer-events-none"></div>
+      <div className="absolute -bottom-8 left-20 w-96 h-96 bg-cyan-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-4000 pointer-events-none"></div>
+
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 relative z-10">
         <div>
           <h1 className="text-2xl font-bold text-white">Painel da Equipe</h1>
           <p className="text-gray-400">
@@ -248,10 +253,10 @@ export default function TeamPanel() {
       </div>
 
       {/* CONTEÚDO PRINCIPAL */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
         
         {/* CARD DA VIATURA */}
-        <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+        <div className="glass-card-dark p-6 rounded-2xl">
           <h2 className="text-xl font-bold text-blue-400 mb-4">Dados da Viatura</h2>
           
           <div className="space-y-3">
@@ -303,16 +308,16 @@ export default function TeamPanel() {
         </div>
 
         {/* OCORRÊNCIA ATUAL */}
-        <div className="lg:col-span-2 bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+        <div className="lg:col-span-2 glass-card-dark p-6 rounded-2xl">
           <h2 className="text-xl font-bold text-white mb-6">Ocorrência Atual</h2>
 
           {isLoading ? (
             <p className="text-gray-400">Carregando ocorrência...</p>
           ) : incident ? (
             <>
-              <div className="bg-gray-700 p-4 rounded mb-6">
-                <h3 className="text-lg font-bold text-white">{incident.title}</h3>
-                <p className="text-gray-300">{incident.address}</p>
+              <div className="bg-slate-800/50 border border-slate-700/50 p-5 rounded-xl mb-6 shadow-inner backdrop-blur-sm">
+                <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 mb-1">{incident.title}</h3>
+                <p className="text-slate-300 mb-3">{incident.address}</p>
 
                 <div className="mt-2 flex gap-2">
                   <span className="bg-red-900 text-red-200 px-3 py-1 rounded text-xs font-bold">
@@ -325,35 +330,41 @@ export default function TeamPanel() {
               </div>
 
               {/* BOTÕES DE AÇÃO */}
-              <div className="space-y-3">
+              <div className="space-y-3 mt-4">
                 {incident.status === 'PENDENTE' && (
                   <button
                     onClick={() => handleStatusChange('EM_TRANSITO')}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-bold text-lg"
+                    className="w-full relative group overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:-translate-y-0.5"
                   >
-                    INICIAR DESLOCAMENTO
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                       INICIAR DESLOCAMENTO <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
                   </button>
                 )}
 
                 {incident.status === 'EM_TRANSITO' && (
                   <button
                     onClick={() => handleStatusChange('NO_LOCAL')}
-                    className="w-full bg-yellow-600 hover:bg-yellow-700 text-white p-4 rounded-lg font-bold text-lg"
+                    className="w-full relative group overflow-hidden bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:-translate-y-0.5"
                   >
-                    CONFIRMAR CHEGADA NO LOCAL
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      CONFIRMAR CHEGADA NO LOCAL <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
                   </button>
                 )}
 
                 {incident.status === 'NO_LOCAL' && (
                   <>
-                    <p className="text-gray-400 text-sm text-center">
-                      Faça a APR antes de iniciar.
+                    <p className="text-orange-300 text-sm text-center font-medium my-2">
+                      ⚠️ Faça a APR antes de iniciar.
                     </p>
                     <button
                       onClick={() => handleStatusChange('EM_EXECUCAO')}
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-lg font-bold text-lg"
+                      className="w-full relative group overflow-hidden bg-gradient-to-r from-orange-600 to-red-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(249,115,22,0.4)] hover:-translate-y-0.5"
                     >
-                      INICIAR REPARO (APR OK)
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        INICIAR REPARO (APR OK) <span className="group-hover:translate-x-1 transition-transform">→</span>
+                      </span>
                     </button>
                   </>
                 )}
@@ -361,9 +372,11 @@ export default function TeamPanel() {
                 {incident.status === 'EM_EXECUCAO' && (
                   <button
                     onClick={() => handleStatusChange('CONCLUIDO')}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-bold text-lg"
+                    className="w-full relative group overflow-hidden bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:-translate-y-0.5"
                   >
-                    FINALIZAR OCORRÊNCIA
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      FINALIZAR OCORRÊNCIA <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
                   </button>
                 )}
 
@@ -381,10 +394,10 @@ export default function TeamPanel() {
                 {/* Botão para ver mapa */}
                 <button
                   onClick={() => setShowMap(!showMap)}
-                  className={`w-full mt-4 py-3 rounded-lg font-semibold transition ${
+                  className={`w-full mt-4 py-4 rounded-xl font-semibold transition-all duration-300 ${
                     showMap 
-                      ? 'bg-gray-600 hover:bg-gray-700 text-white' 
-                      : 'bg-slate-700 hover:bg-slate-600 text-white'
+                      ? 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600' 
+                      : 'glass-card hover-lift text-white border border-white/10'
                   }`}
                 >
                   {showMap ? '🗺️ Ocultar Mapa' : '📍 Ver Localização no Mapa'}
@@ -393,7 +406,7 @@ export default function TeamPanel() {
 
               {/* Mapa de localização */}
               {showMap && (
-                <div className="mt-6">
+                <div className="mt-6 rounded-2xl overflow-hidden border border-slate-700 shadow-xl">
                   <TeamLiveMap 
                     teamName={usuario?.equipeId} 
                     destinationCoords={incidentCoords}
@@ -402,12 +415,12 @@ export default function TeamPanel() {
               )}
 
               {/* CARD DE HORÁRIOS - DESTAQUE */}
-              <div className={`mt-6 rounded-xl p-4 border-2 ${
-                incident.status === 'CONCLUIDO' ? 'bg-green-900/40 border-green-500' :
-                incident.status === 'EM_EXECUCAO' ? 'bg-orange-900/30 border-orange-500' :
-                incident.status === 'NO_LOCAL' ? 'bg-yellow-900/30 border-yellow-500' :
-                incident.status === 'EM_TRANSITO' ? 'bg-blue-900/30 border-blue-500' :
-                'bg-gray-700/50 border-gray-600'
+              <div className={`mt-8 rounded-2xl p-5 border shadow-inner backdrop-blur-sm transition-colors duration-500 ${
+                incident.status === 'CONCLUIDO' ? 'bg-emerald-900/30 border-emerald-500/50' :
+                incident.status === 'EM_EXECUCAO' ? 'bg-orange-900/20 border-orange-500/50' :
+                incident.status === 'NO_LOCAL' ? 'bg-yellow-900/20 border-yellow-500/50' :
+                incident.status === 'EM_TRANSITO' ? 'bg-blue-900/20 border-blue-500/50' :
+                'bg-slate-800/50 border-slate-600/50'
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -563,7 +576,7 @@ export default function TeamPanel() {
       </div>
 
       {/* CHAT */}
-      <div className="mt-6">
+      <div className="mt-8 relative z-10 glass-card-dark rounded-2xl overflow-hidden border border-slate-700">
         <ChatPanel
           channel={incident ? incident.id : `equipe-${usuario.equipeId}`}
           senderName={usuario.nome}

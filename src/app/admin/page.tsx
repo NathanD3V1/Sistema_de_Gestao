@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import useSWR from 'swr';
 import { ChatPanel } from '@/components/ChatPanel';
 import { AddressAutocomplete } from '@/components/AddressAutocomplete';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 
 // Import dinâmico do mapa
 const TeamLiveMap = dynamic(() => import('@/components/TeamLiveMap'), { ssr: false });
@@ -515,6 +516,20 @@ export default function Page() {
     return mockTeams;
   }, [teamsData, data, mockTeams]);
 
+  // Chart data calculation
+  const chartData = useMemo(() => {
+    const counts = { PENDING: 0, IN_TRANSIT: 0, ON_SITE: 0, COMPLETED: 0 };
+    incidents.forEach(i => {
+      counts[i.uiStatus as keyof typeof counts] = (counts[i.uiStatus as keyof typeof counts] || 0) + 1;
+    });
+    return [
+      { name: 'Aguardando', value: counts.PENDING, color: '#f59e0b' },
+      { name: 'Em Trânsito', value: counts.IN_TRANSIT, color: '#3b82f6' },
+      { name: 'No Local', value: counts.ON_SITE, color: '#f97316' },
+      { name: 'Concluído', value: counts.COMPLETED, color: '#22c55e' }
+    ].filter(i => i.value > 0);
+  }, [incidents]);
+
   return (
     <div className="min-h-screen bg-slate-900">
       {/* Header */}
@@ -624,6 +639,61 @@ export default function Page() {
             </div>
           </div>
         </div>
+
+        {/* Dashboard Charts */}
+        {chartData.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div className="glass-card rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-white mb-4">Distribuição de Status</h3>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <RechartsTooltip 
+                      contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="glass-card rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-white mb-4">Volume por Categoria</h3>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <RechartsTooltip 
+                      cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                      contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                    />
+                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Incidents List */}

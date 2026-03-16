@@ -42,12 +42,19 @@ type IncidentUI = IncidentServer & {
   teamLabel: string;
 };
 
-// ====================== MOCK DE EQUIPES ======================
-const mockTeamsBase = [
-  { id: 'eqp-1', name: 'Equipe A', members: 4, location: 'Zona Sul', vehicle: 'Fiat Strada - OEX-9090' },
-  { id: 'eqp-2', name: 'Equipe B', members: 3, location: 'Zona Norte', vehicle: 'Ford Ranger - ABC-1234' },
-  { id: 'eqp-3', name: 'Equipe C', members: 5, location: 'Centro', vehicle: 'Chevrolet S10 - XYZ-5678' },
-];
+// ====================== FETCHER PARA EQUIPES ======================
+// A API de equipes retorna { success: true, data: [...] }, precisamos extrair o array
+const teamsFetcher = (url: string) =>
+  fetch(url).then((r) => {
+    if (!r.ok) throw new Error('Falha ao carregar equipes');
+    return r.json();
+  }).then((json) => {
+    // Se a resposta tiver o formato { success, data }, extrai o data
+    if (json && json.data && Array.isArray(json.data)) return json.data;
+    // Se já for um array, retorna diretamente
+    if (Array.isArray(json)) return json;
+    return [];
+  });
 
 // ====================== TIPOS DE EQUIPE ======================
 type TeamServer = {
@@ -127,8 +134,8 @@ export default function Page() {
   const [isTeamEditOpen, setIsTeamEditOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   
-  // Dados das equipes da API
-  const { data: teamsData, isLoading: teamsLoading, error: teamsError, mutate: mutateTeams } = useSWR<TeamServer[]>('/api/teams', fetcher, {
+  // Dados das equipes da API (usa teamsFetcher para extrair o array do envelope { success, data })
+  const { data: teamsData, isLoading: teamsLoading, error: teamsError, mutate: mutateTeams } = useSWR<TeamServer[]>('/api/teams', teamsFetcher, {
     refreshInterval: 10000,
     revalidateOnFocus: true,
   });
@@ -157,7 +164,7 @@ export default function Page() {
     address: '',
     priority: 'NORMAL',
     uiStatus: 'PENDING',
-    teamId: mockTeamsBase[0]?.id ?? 'eqp-1',
+    teamId: '', // Inicializa vazio, será preenchido via useEffect
   });
 
   // Modal "Editar Ocorrência"
@@ -172,27 +179,17 @@ export default function Page() {
   // Normaliza incidents para a UI
   const incidents: IncidentUI[] = useMemo(() => {
     const raw = data ?? [];
-    const teamById = new Map(mockTeamsBase.map((t) => [t.id, t.name] as const));
+    const teams = teamsData ?? [];
+    const teamById = new Map(teams.map((t) => [t.id, t.name] as const));
     return raw.map((i) => ({
       ...i,
       uiStatus: serverToAdmin[i.status],
       teamLabel: teamById.get(i.teamId) ?? i.teamId,
     }));
-  }, [data]);
+  }, [data, teamsData]);
 
   // Calculate dynamic team status based on active incidents (not COMPLETED)
-  const mockTeams = useMemo(() => {
-    const activeTeamIds = new Set(
-      (data ?? [])
-        .filter((i: IncidentServer) => i.status !== 'CONCLUIDO')
-        .map((i: IncidentServer) => i.teamId)
-    );
-    
-    return mockTeamsBase.map((team) => ({
-      ...team,
-      status: activeTeamIds.has(team.id) ? 'BUSY' : 'AVAILABLE',
-    }));
-  }, [data]);
+  // (removido mockTeamsBase - agora usa teamsData do Supabase)
 
   // Seleciona automaticamente o primeiro quando carregar
   useEffect(() => {
@@ -265,7 +262,7 @@ export default function Page() {
       address: '',
       priority: 'NORMAL',
       uiStatus: 'PENDING',
-      teamId: mockTeamsBase[0]?.id ?? 'eqp-1',
+      teamId: '',
     });
     setSelectedId(id);
   }
@@ -503,23 +500,21 @@ export default function Page() {
     setIsTeamModalOpen(false);
   }
 
-  // Obter equipes para exibição (da API ou fallback para mock)
+  // Obter equipes para exibição (diretamente da API do Supabase)
   const displayTeams = useMemo(() => {
-    if (teamsData && teamsData.length > 0) {
-      // Calcular status dinâmico baseado em incidentes ativos
-      const activeTeamIds = new Set(
-        (data ?? [])
-          .filter((i: IncidentServer) => i.status !== 'CONCLUIDO')
-          .map((i: IncidentServer) => i.teamId)
-      );
-      
-      return teamsData.map((team) => ({
-        ...team,
-        status: activeTeamIds.has(team.id) ? 'BUSY' : team.status,
-      }));
-    }
-    return mockTeams;
-  }, [teamsData, data, mockTeams]);
+    const teams = teamsData ?? [];
+    // Calcular status dinâmico baseado em incidentes ativos
+    const activeTeamIds = new Set(
+      (data ?? [])
+        .filter((i: IncidentServer) => i.status !== 'CONCLUIDO')
+        .map((i: IncidentServer) => i.teamId)
+    );
+    
+    return teams.map((team) => ({
+      ...team,
+      status: activeTeamIds.has(team.id) ? 'BUSY' : team.status,
+    }));
+  }, [teamsData, data]);
 
   // Chart data calculation
   const chartData = useMemo(() => {

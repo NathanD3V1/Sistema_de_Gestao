@@ -57,6 +57,7 @@ model Company {
 model Team {
   id        String        @id @default(uuid())
   name      String
+  matricula String?
   company   Company       @relation("company_teams", fields: [companyId], references: [id], onDelete: Cascade)
   companyId String
   members   User[]        @relation("team_members")

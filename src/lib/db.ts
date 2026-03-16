@@ -323,6 +323,7 @@ export async function dbCreateTeam(team: any): Promise<TeamJson> {
     const dbTeam = {
       id: team.id,
       name: team.name,
+      matricula: team.matricula || null,
       company_id: dbCompanyId,
       status: team.status || 'AVAILABLE',
       location: team.location || null,
@@ -351,6 +352,7 @@ export async function dbUpdateTeam(id: string, data: any): Promise<TeamJson | nu
     const updateData: any = { updated_at: new Date().toISOString() };
     
     if (data.name !== undefined) updateData.name = data.name;
+    if (data.matricula !== undefined) updateData.matricula = data.matricula;
     if (data.status !== undefined) updateData.status = data.status;
     if (data.location !== undefined) updateData.location = data.location;
     
@@ -562,6 +564,7 @@ function convertDbTeamToJson(db: any): TeamJson {
   return {
     id: db.id,
     name: db.name,
+    matricula: db.matricula,
     companyId: db.company_id,
     status: db.status,
     location: db.location,

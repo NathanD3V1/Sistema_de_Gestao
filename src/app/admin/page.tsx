@@ -53,6 +53,7 @@ const mockTeamsBase = [
 type TeamServer = {
   id: string;
   name: string;
+  matricula: string;
   status: string;
   location: string;
   members: number;
@@ -136,6 +137,7 @@ export default function Page() {
   const [teamForm, setTeamForm] = useState({
     id: '',
     name: '',
+    matricula: '',
     status: 'AVAILABLE',
     location: '',
     members: 1,
@@ -401,6 +403,7 @@ export default function Page() {
     setTeamForm({
       id: `eqp-${Date.now()}`,
       name: '',
+      matricula: '',
       status: 'AVAILABLE',
       location: '',
       members: 1,
@@ -416,6 +419,7 @@ export default function Page() {
     setTeamForm({
       id: team.id,
       name: team.name,
+      matricula: team.matricula || '',
       status: team.status,
       location: team.location,
       members: team.members,
@@ -447,6 +451,7 @@ export default function Page() {
     setTeamForm({
       id: '',
       name: '',
+      matricula: '',
       status: 'AVAILABLE',
       location: '',
       members: 1,
@@ -561,81 +566,71 @@ export default function Page() {
       <div className="container mx-auto px-4 py-8">
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="group relative overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-600 rounded-2xl p-6 text-white hover-lift">
-            <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+          <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-blue-500 hover-lift">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
                   <span className="text-2xl">📋</span>
                 </div>
-                <div className="w-20 h-20 bg-white/5 rounded-full -mr-8 -mt-8 blur-2xl"></div>
               </div>
-              <div className="text-4xl font-bold mb-1">{incidents.length}</div>
-              <p className="text-blue-100 text-sm font-medium">Total de Ocorrências</p>
+              <div className="text-4xl font-bold mb-1 text-slate-800">{incidents.length}</div>
+              <p className="text-slate-500 text-sm font-medium">Total de Ocorrências</p>
             </div>
           </div>
 
-          <div className="group relative overflow-hidden bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 rounded-2xl p-6 text-white hover-lift">
-            <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+          <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-orange-500 hover-lift">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center">
                   <span className="text-2xl">⏳</span>
                 </div>
-                <div className="w-20 h-20 bg-white/5 rounded-full -mr-8 -mt-8 blur-2xl"></div>
               </div>
-              <div className="text-4xl font-bold mb-1">
+              <div className="text-4xl font-bold mb-1 text-slate-800">
                 {incidents.filter((i) => i.uiStatus === 'PENDING').length}
               </div>
-              <p className="text-orange-100 text-sm font-medium">Aguardando</p>
+              <p className="text-slate-500 text-sm font-medium">Aguardando</p>
             </div>
           </div>
 
           {displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? (
-            <div className="group relative overflow-hidden bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-2xl p-6 text-white hover-lift animate-pulse">
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+            <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-red-500 hover-lift bg-red-50">
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center">
                     <span className="text-2xl">⚠️</span>
                   </div>
-                  <div className="w-20 h-20 bg-white/5 rounded-full -mr-8 -mt-8 blur-2xl"></div>
                 </div>
-                <div className="text-4xl font-bold mb-1">
+                <div className="text-4xl font-bold mb-1 text-red-700">
                   {displayTeams.filter((t) => t.status === 'AVAILABLE').length}
                 </div>
-                <p className="text-red-100 text-sm font-medium">Nenhuma Equipe Disponível!</p>
+                <p className="text-red-500 text-sm font-medium">Nenhuma Equipe Disponível!</p>
               </div>
             </div>
           ) : (
-            <div className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-emerald-600 to-teal-600 rounded-2xl p-6 text-white hover-lift">
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+            <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-green-500 hover-lift">
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center">
                     <span className="text-2xl">✅</span>
                   </div>
-                  <div className="w-20 h-20 bg-white/5 rounded-full -mr-8 -mt-8 blur-2xl"></div>
                 </div>
-                <div className="text-4xl font-bold mb-1">
+                <div className="text-4xl font-bold mb-1 text-slate-800">
                   {displayTeams.filter((t) => t.status === 'AVAILABLE').length}
                 </div>
-                <p className="text-green-100 text-sm font-medium">Equipes Disponíveis</p>
+                <p className="text-slate-500 text-sm font-medium">Equipes Disponíveis</p>
               </div>
             </div>
           )}
 
-          <div className="group relative overflow-hidden bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-600 rounded-2xl p-6 text-white hover-lift">
-            <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+          <div className="group relative overflow-hidden corporate-card p-6 border-l-4 border-l-violet-500 hover-lift">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <div className="w-12 h-12 bg-violet-50 text-violet-600 rounded-xl flex items-center justify-center">
                   <span className="text-2xl">👥</span>
                 </div>
-                <div className="w-20 h-20 bg-white/5 rounded-full -mr-8 -mt-8 blur-2xl"></div>
               </div>
-              <div className="text-4xl font-bold mb-1">{displayTeams.length}</div>
-              <p className="text-violet-100 text-sm font-medium">Total de Equipes</p>
+              <div className="text-4xl font-bold mb-1 text-slate-800">{displayTeams.length}</div>
+              <p className="text-slate-500 text-sm font-medium">Total de Equipes</p>
             </div>
           </div>
         </div>
@@ -643,8 +638,8 @@ export default function Page() {
         {/* Dashboard Charts */}
         {chartData.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div className="glass-card rounded-2xl p-6">
-              <h3 className="text-xl font-bold text-white mb-4">Distribuição de Status</h3>
+            <div className="corporate-card-dark p-6">
+              <h3 className="text-xl font-bold mb-4">Distribuição de Status</h3>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -671,8 +666,8 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="glass-card rounded-2xl p-6">
-              <h3 className="text-xl font-bold text-white mb-4">Volume por Categoria</h3>
+            <div className="corporate-card-dark p-6">
+              <h3 className="text-xl font-bold mb-4">Volume por Categoria</h3>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -698,12 +693,12 @@ export default function Page() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Incidents List */}
           <div className="lg:col-span-2">
-            <div className="glass-card rounded-2xl p-6">
+            <div className="corporate-card-dark p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">Ocorrências</h2>
+                <h2 className="text-2xl font-bold">Ocorrências</h2>
                 <button
                   onClick={() => setIsCreateOpen(true)}
-                  className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-5 py-2.5 rounded-xl transition-all hover-lift shadow-lg shadow-blue-500/20 font-medium"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-colors font-medium shadow-sm"
                 >
                   ➕ Nova Ocorrência
                 </button>
@@ -716,10 +711,10 @@ export default function Page() {
                     <button
                       key={status}
                       onClick={() => setFilterStatus(status)}
-                      className={`px-4 py-2 rounded-full transition-all text-sm font-medium ${
+                      className={`px-4 py-2 rounded-lg transition-all text-sm font-medium border ${
                         filterStatus === status
-                          ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25'
-                          : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 border border-slate-600/50'
+                          ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
+                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700'
                       }`}
                     >
                       {status === 'ALL' ? 'Todas' : status === 'PENDING' ? '⏳ Aguardando' : status === 'IN_TRANSIT' ? '🚗 Em Trânsito' : status === 'ON_SITE' ? '📍 No Local' : '✅ Concluído'}
@@ -749,20 +744,20 @@ export default function Page() {
                     <div
                       key={incident.id}
                       onClick={() => setSelectedId(incident.id)}
-                      className={`group p-4 rounded-xl border cursor-pointer transition-all duration-300 hover-lift ${
+                      className={`group p-4 rounded-xl border cursor-pointer transition-colors ${
                         selectedId === incident.id
-                          ? 'bg-gradient-to-r from-blue-600/80 to-blue-500/60 border-blue-400 shadow-lg shadow-blue-500/20'
-                          : 'bg-slate-700/50 border-slate-600/50 hover:border-slate-400 hover:bg-slate-700/80'
+                          ? 'bg-blue-900/40 border-blue-500'
+                          : 'bg-slate-800/60 border-slate-700 hover:border-slate-500 hover:bg-slate-700/80'
                       }`}
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <h3 className="font-bold text-white mb-2 group-hover:text-blue-100 transition-colors">{incident.title}</h3>
+                          <h3 className="font-bold mb-2 group-hover:text-blue-300 transition-colors text-slate-100">{incident.title}</h3>
                           <div className="flex gap-2 flex-wrap">
-                            <span className={`px-2 py-1 rounded text-sm font-semibold backdrop-blur-sm ${st.color} ${st.textColor}`}>
+                            <span className={`px-2 py-1 rounded text-sm font-semibold ${st.color} ${st.textColor}`}>
                               {st.label}
                             </span>
-                            <span className={`px-2 py-1 rounded text-sm font-semibold backdrop-blur-sm ${pr.color} ${pr.textColor}`}>
+                            <span className={`px-2 py-1 rounded text-sm font-semibold ${pr.color} ${pr.textColor}`}>
                               {pr.label}
                             </span>
                           </div>
@@ -786,52 +781,51 @@ export default function Page() {
             </div>
           </div>
 
-          {/* Painel de Detalhes */}
           <div>
-            <div className="glass-card rounded-2xl p-6 sticky top-24">
+            <div className="corporate-card p-6 sticky top-24">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
                   <span className="text-lg">📋</span>
                 </div>
-                <h3 className="text-xl font-bold text-white">Detalhes da Ocorrência</h3>
+                <h3 className="text-xl font-bold text-slate-800">Detalhes da Ocorrência</h3>
               </div>
 
               {!selectedIncident ? (
-                <div className="text-slate-400">Selecione uma ocorrência na lista ao lado.</div>
+                <div className="text-slate-500">Selecione uma ocorrência na lista ao lado.</div>
               ) : (
                 <div className="space-y-4">
                   <div>
-                    <label className="text-slate-400 text-sm">Título</label>
-                    <p className="text-white font-semibold">{selectedIncident.title}</p>
+                    <label className="text-slate-500 text-sm">Título</label>
+                    <p className="text-slate-800 font-semibold">{selectedIncident.title}</p>
                   </div>
 
                   <div>
-                    <label className="text-slate-400 text-sm">Status</label>
+                    <label className="text-slate-500 text-sm">Status</label>
                     <p className={`px-3 py-1 rounded-full text-sm font-semibold inline-block ${getStatusColor(selectedIncident.uiStatus).color} ${getStatusColor(selectedIncident.uiStatus).textColor}`}>
                       {getStatusColor(selectedIncident.uiStatus).label}
                     </p>
                   </div>
 
                   <div>
-                    <label className="text-slate-400 text-sm">Prioridade</label>
+                    <label className="text-slate-500 text-sm">Prioridade</label>
                     <p className={`px-3 py-1 rounded-full text-sm font-semibold inline-block ${getPriorityColor(normalizePriority(selectedIncident.priority)).color} ${getPriorityColor(normalizePriority(selectedIncident.priority)).textColor}`}>
                       {getPriorityColor(normalizePriority(selectedIncident.priority)).label}
                     </p>
                   </div>
 
                   <div>
-                    <label className="text-slate-400 text-sm">Equipe Atribuída</label>
-                    <p className="text-white font-semibold">{selectedIncident.teamLabel}</p>
+                    <label className="text-slate-500 text-sm">Equipe Atribuída</label>
+                    <p className="text-slate-800 font-semibold">{selectedIncident.teamLabel}</p>
                   </div>
 
                   <div>
-                    <label className="text-slate-400 text-sm">Endereço</label>
-                    <p className="text-white font-semibold">{selectedIncident.address}</p>
+                    <label className="text-slate-500 text-sm">Endereço</label>
+                    <p className="text-slate-800 font-semibold">{selectedIncident.address}</p>
                   </div>
 
                   <div>
-                    <label className="text-slate-400 text-sm">Última Atualização</label>
-                    <p className="text-white font-semibold">
+                    <label className="text-slate-500 text-sm">Última Atualização</label>
+                    <p className="text-slate-800 font-semibold">
                       {new Date(selectedIncident.updatedAt).toLocaleString('pt-BR', { timeZone: 'America/Bahia' })}
                     </p>
                   </div>
@@ -840,19 +834,19 @@ export default function Page() {
                   <div className="flex flex-col gap-3 pt-2">
                     <button 
                       onClick={handleEditClick}
-                      className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-2.5 rounded-xl transition-all hover-lift shadow-lg shadow-blue-500/20"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl transition-colors font-medium shadow-sm"
                     >
                       ✏️ Editar Ocorrência
                     </button>
                     <button 
                       onClick={handleDeleteIncident}
-                      className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white py-2.5 rounded-xl transition-all hover-lift shadow-lg shadow-red-500/20"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-xl transition-colors font-medium shadow-sm"
                     >
                       🗑️ Excluir
                     </button>
                     <button 
                       onClick={handleToggleMap}
-                      className={`w-full py-2.5 rounded-xl transition-all hover-lift ${showMap ? 'bg-gradient-to-r from-slate-600 to-slate-500' : 'bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500'} text-white shadow-lg`}
+                      className={`w-full py-2.5 rounded-xl transition-colors ${showMap ? 'bg-slate-200 text-slate-800' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'} font-medium shadow-sm`}
                     >
                       {showMap ? '🗺️ Ocultar Mapa' : '📍 Ver Localização'}
                     </button>
@@ -876,10 +870,10 @@ export default function Page() {
         {/* Teams Section */}
         <div className="mt-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-white">Equipes em Operação</h2>
+            <h2 className="text-2xl font-bold">Equipes em Operação</h2>
             <button
               onClick={() => handleOpenNewTeam()}
-              className="bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-500 hover:to-teal-400 text-white px-5 py-2.5 rounded-xl transition-all hover-lift shadow-lg shadow-cyan-500/20 font-medium"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-colors font-medium shadow-sm"
             >
               ➕ Nova Equipe
             </button>
@@ -898,19 +892,16 @@ export default function Page() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {displayTeams.map((team) => (
-              <div key={team.id} className="group relative overflow-hidden glass-card rounded-2xl p-6 hover-lift border border-white/5">
-                {/* Gradient overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
+              <div key={team.id} className="group relative overflow-hidden corporate-card p-6 hover-lift border border-slate-200">
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-slate-700 to-slate-600 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center">
                         <span className="text-xl">👷</span>
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-white">{team.name}</h3>
-                        <p className="text-xs text-slate-400">{team.members} membros</p>
+                        <h3 className="text-lg font-bold text-slate-800">{team.name}</h3>
+                        <p className="text-xs text-slate-500">{team.members} membros</p>
                       </div>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${team.status === 'AVAILABLE' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-orange-500/20 text-orange-400 border border-orange-500/30'}`}>
@@ -919,18 +910,22 @@ export default function Page() {
                     </span>
                   </div>
 
-                  <div className="space-y-2 text-slate-300">
+                  <div className="space-y-2 text-slate-600 mt-4">
                     <p className="flex items-center gap-2 text-sm">
-                      <span className="text-slate-500">🚗</span>
+                      <span className="text-slate-400">🚗</span>
                       <span className="truncate">{(team as any).vehicle || 'Não atribuído'}</span>
                     </p>
                     <p className="flex items-center gap-2 text-sm">
-                      <span className="text-slate-500">📍</span>
+                      <span className="text-slate-400">🔖</span>
+                      <span className="font-mono bg-slate-100 text-slate-600 px-1 rounded">{(team as any).matricula || 'Sem Matr.'}</span>
+                    </p>
+                    <p className="flex items-center gap-2 text-sm">
+                      <span className="text-slate-400">📍</span>
                       <span>{(team as any).location || 'Não definida'}</span>
                     </p>
                     {(team as any).phone && (
                       <p className="flex items-center gap-2 text-sm">
-                        <span className="text-slate-500">📞</span>
+                        <span className="text-slate-400">📞</span>
                         <span>{(team as any).phone}</span>
                       </p>
                     )}
@@ -945,13 +940,13 @@ export default function Page() {
                           setSelectedId(teamIncident.id);
                         }
                       }}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-2 rounded-xl transition-all text-sm font-medium shadow-lg shadow-blue-500/20"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl transition-colors text-sm font-medium shadow-sm"
                     >
                       💬 Chat
                     </button>
                     <button 
                       onClick={() => handleEditTeam(team as TeamServer)}
-                      className="px-4 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white py-2 rounded-xl transition-all text-sm"
+                      className="px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2 rounded-xl transition-colors text-sm shadow-sm"
                     >
                       ✏️
                     </button>
@@ -969,9 +964,9 @@ export default function Page() {
         </div>
 
         {/* Chat com a Equipe */}
-        <div className="mt-8">
+        <div className="mt-8 mb-8 corporate-card-dark p-6">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold">
               Chat com a Equipe
               {selectedIncident && (
                 <span className="text-sm font-normal text-slate-400 ml-2">
@@ -992,13 +987,13 @@ export default function Page() {
 
       {/* MODAL - Nova Ocorrência */}
       {isCreateOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-modal rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in border border-white/10 shadow-2xl shadow-black/50">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
                 <span className="text-lg">➕</span>
               </div>
-              <h3 className="text-xl font-bold text-white">Nova Ocorrência</h3>
+              <h3 className="text-xl font-bold text-slate-800">Nova Ocorrência</h3>
             </div>
 
             <form className="space-y-4" onSubmit={handleCreateIncident}>
@@ -1037,9 +1032,9 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Status inicial</label>
+                  <label className="block text-sm text-slate-600 font-medium mb-1">Status inicial</label>
                   <select
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                     value={form.uiStatus}
                     onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
                   >
@@ -1070,13 +1065,13 @@ export default function Page() {
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-600 text-slate-200 hover:bg-slate-700/50 transition-all"
+                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors font-medium"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-medium transition-all hover-lift shadow-lg shadow-blue-500/20"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
                 >
                   Criar Ocorrência
                 </button>
@@ -1088,10 +1083,10 @@ export default function Page() {
 
       {/* MODAL - Editar Ocorrência */}
       {isEditOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-modal rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in border border-white/10 shadow-2xl shadow-black/50">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
                 <span className="text-lg">✏️</span>
               </div>
               <h3 className="text-xl font-bold text-white">Editar Ocorrência</h3>
@@ -1099,9 +1094,9 @@ export default function Page() {
 
             <form className="space-y-4" onSubmit={handleUpdateIncident}>
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Título</label>
+                <label className="block text-sm text-slate-600 font-medium mb-1">Título</label>
                 <input
-                  className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                   required
@@ -1133,9 +1128,9 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Status</label>
+                  <label className="block text-sm text-slate-600 font-medium mb-1">Status</label>
                   <select
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                     value={form.uiStatus}
                     onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
                   >
@@ -1166,13 +1161,13 @@ export default function Page() {
                 <button
                   type="button"
                   onClick={() => setIsEditOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-600 text-slate-200 hover:bg-slate-700/50 transition-all"
+                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors font-medium"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-medium transition-all hover-lift shadow-lg shadow-blue-500/20"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
                 >
                   Salvar Alterações
                 </button>
@@ -1184,20 +1179,20 @@ export default function Page() {
 
       {/* MODAL - Gerenciar Equipes */}
       {isTeamModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-modal rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in border border-white/10 shadow-2xl shadow-black/50 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-cyan-50 text-cyan-600 rounded-xl flex items-center justify-center">
                   <span className="text-lg">👥</span>
                 </div>
-                <h3 className="text-xl font-bold text-white">
+                <h3 className="text-xl font-bold text-slate-800">
                   {selectedTeamId ? 'Editar Equipe' : 'Nova Equipe'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsTeamModalOpen(false)}
-                className="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white flex items-center justify-center transition-all"
+                className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-colors"
               >
                 ✕
               </button>
@@ -1205,9 +1200,9 @@ export default function Page() {
 
             <form className="space-y-4" onSubmit={selectedTeamId ? handleUpdateTeam : handleCreateTeam}>
               <div>
-                <label className="block text-sm text-slate-300 mb-1">ID da Equipe</label>
+                <label className="block text-sm text-slate-600 font-medium mb-1">ID da Equipe</label>
                 <input
-                  className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                   value={teamForm.id}
                   onChange={(e) => setTeamForm((f) => ({ ...f, id: e.target.value }))}
                   required
@@ -1220,9 +1215,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Nome da Equipe</label>
+                <label className="block text-sm text-slate-600 font-medium mb-1">Nome da Equipe</label>
                 <input
-                  className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                   value={teamForm.name}
                   onChange={(e) => setTeamForm((f) => ({ ...f, name: e.target.value }))}
                   required
@@ -1230,11 +1225,21 @@ export default function Page() {
                 />
               </div>
 
+              <div>
+                <label className="block text-sm text-slate-600 font-medium mb-1">Matrícula</label>
+                <input
+                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                  value={teamForm.matricula}
+                  onChange={(e) => setTeamForm((f) => ({ ...f, matricula: e.target.value }))}
+                  placeholder="ex: 1001"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Status</label>
+                  <label className="block text-sm text-slate-600 font-medium mb-1">Status</label>
                   <select
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                     value={teamForm.status}
                     onChange={(e) => setTeamForm((f) => ({ ...f, status: e.target.value }))}
                   >
@@ -1247,11 +1252,11 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Número de Membros</label>
+                  <label className="block text-sm text-slate-600 font-medium mb-1">Número de Membros</label>
                   <input
                     type="number"
                     min="1"
-                    className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                    className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                     value={teamForm.members}
                     onChange={(e) => setTeamForm((f) => ({ ...f, members: parseInt(e.target.value) || 1 }))}
                     required
@@ -1260,9 +1265,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Localização</label>
+                <label className="block text-sm text-slate-600 font-medium mb-1">Localização</label>
                 <input
-                  className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                   value={teamForm.location}
                   onChange={(e) => setTeamForm((f) => ({ ...f, location: e.target.value }))}
                   placeholder="ex: Zona Sul"
@@ -1270,9 +1275,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Veículo</label>
+                <label className="block text-sm text-slate-600 font-medium mb-1">Veículo</label>
                 <input
-                  className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                   value={teamForm.vehicle}
                   onChange={(e) => setTeamForm((f) => ({ ...f, vehicle: e.target.value }))}
                   placeholder="ex: Fiat Strada - ABC-1234"
@@ -1280,9 +1285,9 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm text-slate-300 mb-1">Telefone</label>
+                <label className="block text-sm text-slate-600 font-medium mb-1">Telefone</label>
                 <input
-                  className="w-full bg-slate-900/80 text-white border border-slate-600 rounded-xl px-4 py-3 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                  className="w-full bg-white text-slate-900 border border-slate-300 rounded-xl px-4 py-3 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                   value={teamForm.phone}
                   onChange={(e) => setTeamForm((f) => ({ ...f, phone: e.target.value }))}
                   placeholder="ex: (11) 99999-0001"
@@ -1294,7 +1299,7 @@ export default function Page() {
                   <button
                     type="button"
                     onClick={() => handleDeleteTeam(selectedTeamId)}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-medium transition-all hover-lift shadow-lg shadow-red-500/20"
+                    className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-colors shadow-sm"
                   >
                     🗑️ Excluir
                   </button>
@@ -1303,13 +1308,13 @@ export default function Page() {
                   <button
                     type="button"
                     onClick={() => setIsTeamModalOpen(false)}
-                    className="px-5 py-2.5 rounded-xl border border-slate-600 text-slate-200 hover:bg-slate-700/50 transition-all"
+                    className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors font-medium"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-500 hover:to-teal-400 text-white font-medium transition-all hover-lift shadow-lg shadow-cyan-500/20"
+                    className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
                   >
                     {selectedTeamId ? 'Salvar' : 'Criar'}
                   </button>

@@ -3,32 +3,17 @@
 @tailwind utilities;
 
 @layer utilities {
-  .glass-card {
-    @apply bg-white/10 backdrop-blur-lg border border-white/20 shadow-xl;
+  .corporate-card {
+    @apply bg-white border border-slate-200 shadow-sm rounded-xl text-slate-800;
   }
-  .glass-card-dark {
-    @apply bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 shadow-2xl;
+  .corporate-card-dark {
+    @apply bg-slate-800 border border-slate-700 shadow-md rounded-xl text-slate-100;
   }
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl;
-  }
-  .animate-blob {
-    animation: blob 7s infinite;
-  }
-  .animation-delay-2000 {
-    animation-delay: 2s;
-  }
-  .animation-delay-4000 {
-    animation-delay: 4s;
+    @apply transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg;
   }
 }
 
-@keyframes blob {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0px, 0px) scale(1); }
-}
 
 * {
   margin: 0;

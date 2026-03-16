@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
     const newTeam = await dbCreateTeam({
       id: body.id,
       name: body.name,
+      matricula: body.matricula || '',
       status: body.status || 'AVAILABLE',
       location: body.location || '',
       members: body.members || 1,
@@ -85,6 +86,7 @@ export async function PATCH(request: NextRequest) {
 
     const updated = await dbUpdateTeam(body.id, {
       name: body.name,
+      matricula: body.matricula,
       status: body.status,
       location: body.location,
       members: body.members,

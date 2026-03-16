@@ -61,15 +61,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Dinâmico Premium */}
-      <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-40 animate-blob"></div>
-      <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-40 animate-blob animation-delay-2000"></div>
-      <div className="absolute -bottom-8 left-20 w-96 h-96 bg-cyan-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-40 animate-blob animation-delay-4000"></div>
-
-      <div className="w-full max-w-md relative z-10 glass-card-dark rounded-3xl p-10 transform transition-all duration-500 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)]">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-10 shadow-xl">
         <div className="flex justify-center mb-8">
-          <div className="w-24 h-24 bg-white/5 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/10 shadow-inner group transition-all duration-300 hover:scale-105 hover:bg-white/10">
+          <div className="w-24 h-24 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm">
             <img 
               src="https://www.neoenergia.com/documents/d/bahia/ImagemCoelbaNeo" 
               alt="Neoenergia" 
@@ -77,20 +72,19 @@ export default function LoginPage() {
             />
           </div>
         </div>
-        
-        <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 mb-2 text-center tracking-tight">
+        <h1 className="text-3xl font-bold text-slate-800 mb-2 text-center tracking-tight">
           Gestão de Ocorrências
         </h1>
-        <p className="text-slate-400 text-sm mb-8 text-center font-medium">Acesso seguro ao sistema integrado</p>
+        <p className="text-slate-500 text-sm mb-8 text-center font-medium">Acesso seguro ao sistema integrado</p>
         
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <label htmlFor="matricula" className="block text-sm font-semibold text-slate-300 ml-1">
+            <label htmlFor="matricula" className="block text-sm font-semibold text-slate-700 ml-1">
               Matrícula de Acesso
             </label>
             <div className="relative group/input">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span className="text-slate-500 group-focus-within/input:text-blue-400 transition-colors duration-300 text-lg">👤</span>
+                <span className="text-slate-400 text-lg">👤</span>
               </div>
               <input
                 id="matricula"
@@ -98,7 +92,7 @@ export default function LoginPage() {
                 value={matricula}
                 onChange={(e) => setMatricula(e.target.value)}
                 placeholder="Ex: 1001 ou 9999"
-                className="w-full bg-slate-800/50 border border-slate-600/50 rounded-xl pl-12 pr-4 py-4 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-slate-800/80 outline-none transition-all duration-300 shadow-inner backdrop-blur-sm"
+                className="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200 shadow-sm"
                 autoFocus
               />
             </div>
@@ -113,11 +107,10 @@ export default function LoginPage() {
           
           <button
             type="submit"
-            className="w-full relative group overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-[1.02]"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors duration-200 shadow-md flex items-center justify-center gap-2"
           >
-            <div className="absolute inset-0 w-full h-full bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
-            <span className="relative flex items-center justify-center gap-2">
-              Entrar no Sistema <span className="text-xl group-hover:translate-x-1 transition-transform duration-300">→</span>
+            <span>
+              Entrar no Sistema
             </span>
           </button>
         </form>

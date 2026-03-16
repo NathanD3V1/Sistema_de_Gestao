@@ -50,10 +50,13 @@ export default function TeamPanel() {
     { refreshInterval: 3000 }
   );
 
-  const incident = incidents?.[0] ?? null;
-
+  // Consider the current incident the first active one, or the next pending one.
+  const activeOrPendingIncidents = incidents?.filter((i: any) => i.status !== 'CONCLUIDO') || [];
+  const incident = activeOrPendingIncidents[0] ?? null;
+  const queuedIncidents = activeOrPendingIncidents.slice(1);
   const handleStatusChange = async (novoStatus: Status) => {
     if (!incident) return;
+
 
     const res = await fetch(`/api/incidents/${incident.id}/status`, {
       method: 'PATCH',
@@ -227,18 +230,15 @@ export default function TeamPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-4 md:p-8 relative overflow-hidden text-slate-100">
-      {/* Background blobs */}
-      <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob pointer-events-none"></div>
-      <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000 pointer-events-none"></div>
-      <div className="absolute -bottom-8 left-20 w-96 h-96 bg-cyan-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-4000 pointer-events-none"></div>
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 relative overflow-hidden text-slate-800">
+      {/* Background blobs removidos para um visual mais profissional */}
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-8 relative z-10">
         <div>
-          <h1 className="text-2xl font-bold text-white">Painel da Equipe</h1>
-          <p className="text-gray-400">
-            Olá, {usuario.nome} | Matrícula: {usuario.matricula}
+          <h1 className="text-2xl font-bold text-slate-800">Painel da Equipe</h1>
+          <p className="text-slate-500 font-medium">
+            Olá, <span className="text-slate-700">{usuario.nome}</span> | Matrícula: <span className="text-slate-700">{usuario.matricula}</span>
           </p>
         </div>
         <button
@@ -255,44 +255,43 @@ export default function TeamPanel() {
       {/* CONTEÚDO PRINCIPAL */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
         
-        {/* CARD DA VIATURA */}
-        <div className="glass-card-dark p-6 rounded-2xl">
-          <h2 className="text-xl font-bold text-blue-400 mb-4">Dados da Viatura</h2>
+        <div className="corporate-card p-6">
+          <h2 className="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">🚜 Dados da Viatura</h2>
           
-          <div className="space-y-3">
+          <div className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
             {/* Status GPS */}
             <div>
-              <p className="text-gray-400 text-sm">Rastreamento GPS</p>
-              <div className="flex items-center gap-2 mt-1">
-                <span className={`w-3 h-3 rounded-full ${
+              <p className="text-slate-500 text-sm font-medium">Rastreamento GPS</p>
+              <div className="flex items-center gap-2 mt-1 bg-white p-2 rounded-lg border border-slate-200 inline-flex">
+                <span className={`w-3 h-3 rounded-full shadow-sm ${
                   gpsStatus === 'active' ? 'bg-green-500 animate-pulse' :
-                  gpsStatus === 'searching' ? 'bg-yellow-500 animate-pulse' :
-                  gpsStatus === 'error' ? 'bg-red-500' : 'bg-gray-500'
+                  gpsStatus === 'searching' ? 'bg-amber-500 animate-pulse' :
+                  gpsStatus === 'error' ? 'bg-red-500' : 'bg-slate-400'
                 }`}></span>
-                <span className={`text-sm font-semibold ${
-                  gpsStatus === 'active' ? 'text-green-400' :
-                  gpsStatus === 'searching' ? 'text-yellow-400' :
-                  gpsStatus === 'error' ? 'text-red-400' : 'text-gray-400'
+                <span className={`text-sm font-bold tracking-wide ${
+                  gpsStatus === 'active' ? 'text-green-700' :
+                  gpsStatus === 'searching' ? 'text-amber-700' :
+                  gpsStatus === 'error' ? 'text-red-700' : 'text-slate-600'
                 }`}>
-                  {gpsStatus === 'active' ? 'Ativo - Coordenadas sendo enviadas' :
+                  {gpsStatus === 'active' ? 'Ativo - Coordenadas OK' :
                    gpsStatus === 'searching' ? 'Buscando sinal GPS...' :
-                   gpsStatus === 'error' ? 'Erro - Verifique permissões' : 'Inativo'}
+                   gpsStatus === 'error' ? 'Erro de Permissão' : 'Inativo'}
                 </span>
               </div>
               {lastCoords && (
-                <p className="text-xs text-gray-500 mt-1 font-mono">
+                <p className="text-xs text-slate-500 mt-2 font-mono bg-slate-100 px-2 py-1 rounded inline-block">
                   {lastCoords.lat.toFixed(6)}, {lastCoords.lng.toFixed(6)}
                 </p>
               )}
             </div>
 
-            <div>
-              <p className="text-gray-400 text-sm">Equipe</p>
-              <p className="text-white font-semibold">{usuario.equipeId === 'eqp-1' ? 'Equipe A' : usuario.equipeId === 'eqp-2' ? 'Equipe B' : usuario.equipeId === 'eqp-3' ? 'Equipe C' : usuario.equipeId}</p>
+            <div className="pt-2 border-t border-slate-200">
+              <p className="text-slate-500 text-sm font-medium">Equipe</p>
+              <p className="text-slate-800 font-bold text-lg">{usuario.equipeId === 'eqp-1' ? 'Equipe A' : usuario.equipeId === 'eqp-2' ? 'Equipe B' : usuario.equipeId === 'eqp-3' ? 'Equipe C' : usuario.equipeId}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Veículo</p>
-              <p className="text-white font-semibold">{usuario.equipeId === 'eqp-1' ? 'Fiat Strada - OEX-9090' : usuario.equipeId === 'eqp-2' ? 'Ford Ranger - ABC-1234' : usuario.equipeId === 'eqp-3' ? 'Chevrolet S10 - XYZ-5678' : 'Não atribuído'}</p>
+              <p className="text-slate-500 text-sm font-medium">Veículo</p>
+              <p className="text-slate-800 font-bold">{usuario.equipeId === 'eqp-1' ? 'Fiat Strada - OEX-9090' : usuario.equipeId === 'eqp-2' ? 'Ford Ranger - ABC-1234' : usuario.equipeId === 'eqp-3' ? 'Chevrolet S10 - XYZ-5678' : 'Não atribuído'}</p>
             </div>
             <div>
               <p className="text-gray-400 text-sm">Status</p>
@@ -308,22 +307,22 @@ export default function TeamPanel() {
         </div>
 
         {/* OCORRÊNCIA ATUAL */}
-        <div className="lg:col-span-2 glass-card-dark p-6 rounded-2xl">
-          <h2 className="text-xl font-bold text-white mb-6">Ocorrência Atual</h2>
+        <div className="lg:col-span-2 corporate-card p-6">
+          <h2 className="text-xl font-bold text-slate-800 mb-6">Ocorrência Atual</h2>
 
           {isLoading ? (
-            <p className="text-gray-400">Carregando ocorrência...</p>
+            <p className="text-slate-500">Carregando ocorrência...</p>
           ) : incident ? (
             <>
-              <div className="bg-slate-800/50 border border-slate-700/50 p-5 rounded-xl mb-6 shadow-inner backdrop-blur-sm">
-                <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 mb-1">{incident.title}</h3>
-                <p className="text-slate-300 mb-3">{incident.address}</p>
+              <div className="bg-slate-50 border border-slate-200 p-5 rounded-xl mb-6 shadow-sm">
+                <h3 className="text-xl font-bold text-slate-800 mb-1">{incident.title}</h3>
+                <p className="text-slate-600 mb-3">{incident.address}</p>
 
                 <div className="mt-2 flex gap-2">
-                  <span className="bg-red-900 text-red-200 px-3 py-1 rounded text-xs font-bold">
+                  <span className="bg-red-50 text-red-700 border border-red-200 px-3 py-1 rounded text-xs font-bold">
                     PRIORIDADE {incident.priority}
                   </span>
-                  <span className="bg-blue-900 text-blue-200 px-3 py-1 rounded text-xs font-bold">
+                  <span className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded text-xs font-bold">
                     STATUS: {incident.status}
                   </span>
                 </div>
@@ -334,7 +333,7 @@ export default function TeamPanel() {
                 {incident.status === 'PENDENTE' && (
                   <button
                     onClick={() => handleStatusChange('EM_TRANSITO')}
-                    className="w-full relative group overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:-translate-y-0.5"
+                    className="w-full relative bg-blue-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-blue-700 shadow-sm hover:shadow"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                        INICIAR DESLOCAMENTO <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -345,7 +344,7 @@ export default function TeamPanel() {
                 {incident.status === 'EM_TRANSITO' && (
                   <button
                     onClick={() => handleStatusChange('NO_LOCAL')}
-                    className="w-full relative group overflow-hidden bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:-translate-y-0.5"
+                    className="w-full relative bg-amber-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-amber-600 shadow-sm hover:shadow"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       CONFIRMAR CHEGADA NO LOCAL <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -355,12 +354,12 @@ export default function TeamPanel() {
 
                 {incident.status === 'NO_LOCAL' && (
                   <>
-                    <p className="text-orange-300 text-sm text-center font-medium my-2">
+                    <p className="text-amber-600 text-sm text-center font-medium my-2">
                       ⚠️ Faça a APR antes de iniciar.
                     </p>
                     <button
                       onClick={() => handleStatusChange('EM_EXECUCAO')}
-                      className="w-full relative group overflow-hidden bg-gradient-to-r from-orange-600 to-red-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(249,115,22,0.4)] hover:-translate-y-0.5"
+                      className="w-full relative bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-orange-700 shadow-sm hover:shadow"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
                         INICIAR REPARO (APR OK) <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -372,7 +371,7 @@ export default function TeamPanel() {
                 {incident.status === 'EM_EXECUCAO' && (
                   <button
                     onClick={() => handleStatusChange('CONCLUIDO')}
-                    className="w-full relative group overflow-hidden bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:-translate-y-0.5"
+                    className="w-full relative bg-emerald-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-emerald-700 shadow-sm hover:shadow"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       FINALIZAR OCORRÊNCIA <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -381,11 +380,11 @@ export default function TeamPanel() {
                 )}
 
                 {incident.status === 'CONCLUIDO' && (
-                  <div className="bg-green-900/30 border border-green-800 p-4 rounded text-center">
-                    <p className="text-green-400 font-bold text-lg">
+                  <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+                    <p className="text-emerald-700 font-bold text-lg">
                       Ocorrência Baixada com Sucesso
                     </p>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-emerald-600 text-sm">
                       Aguarde nova atribuição da central.
                     </p>
                   </div>
@@ -415,19 +414,19 @@ export default function TeamPanel() {
               )}
 
               {/* CARD DE HORÁRIOS - DESTAQUE */}
-              <div className={`mt-8 rounded-2xl p-5 border shadow-inner backdrop-blur-sm transition-colors duration-500 ${
-                incident.status === 'CONCLUIDO' ? 'bg-emerald-900/30 border-emerald-500/50' :
-                incident.status === 'EM_EXECUCAO' ? 'bg-orange-900/20 border-orange-500/50' :
-                incident.status === 'NO_LOCAL' ? 'bg-yellow-900/20 border-yellow-500/50' :
-                incident.status === 'EM_TRANSITO' ? 'bg-blue-900/20 border-blue-500/50' :
-                'bg-slate-800/50 border-slate-600/50'
+              <div className={`mt-8 rounded-2xl p-5 border transition-colors duration-500 shadow-sm ${
+                incident.status === 'CONCLUIDO' ? 'bg-emerald-50 border-emerald-200' :
+                incident.status === 'EM_EXECUCAO' ? 'bg-orange-50 border-orange-200' :
+                incident.status === 'NO_LOCAL' ? 'bg-amber-50 border-amber-200' :
+                incident.status === 'EM_TRANSITO' ? 'bg-blue-50 border-blue-200' :
+                'bg-slate-50 border-slate-200'
               }`}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
                     <span className="text-2xl">⏱️</span> Cronograma da Ocorrência
                   </h3>
                   {incident.status === 'CONCLUIDO' && (
-                    <span className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">
                       ✅ CONCLUÍDO
                     </span>
                   )}
@@ -435,15 +434,15 @@ export default function TeamPanel() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {/* SAÍDA */}
-                  <div className={`rounded-lg p-3 text-center transition-all ${
+                  <div className={`rounded-xl p-4 text-center transition-all ${
                     incident.status === 'EM_TRANSITO' || incident.status === 'NO_LOCAL' || incident.status === 'EM_EXECUCAO' || incident.status === 'CONCLUIDO'
-                      ? 'bg-blue-800/50 border border-blue-500' 
-                      : 'bg-gray-700/50 border border-gray-600 opacity-60'
+                      ? 'bg-white border border-blue-200 shadow-sm' 
+                      : 'bg-white/50 border border-slate-200 opacity-60'
                   }`}>
                     <div className="text-2xl mb-1">🚀</div>
-                    <p className="text-gray-300 text-xs font-semibold uppercase mb-1">Saída</p>
+                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Saída</p>
                     <p className={`text-xl font-bold ${
-                      incident?.departedAt ? 'text-blue-300' : 'text-gray-500'
+                      incident?.departedAt ? 'text-blue-700' : 'text-slate-400'
                     }`}>
                       {incident?.departedAt
                         ? new Date(incident.departedAt).toLocaleTimeString('pt-BR', {
@@ -454,23 +453,23 @@ export default function TeamPanel() {
                         : '--:--'}
                     </p>
                     {incident?.departedAt && (
-                      <p className="text-blue-400 text-xs mt-1">✓ Registrado</p>
+                      <p className="text-blue-600 text-xs mt-1 font-medium">✓ Registrado</p>
                     )}
                     {!incident?.departedAt && incident.status === 'PENDENTE' && (
-                      <p className="text-gray-500 text-xs mt-1">Aguardando...</p>
+                      <p className="text-slate-500 text-xs mt-1">Aguardando...</p>
                     )}
                   </div>
 
                   {/* CHEGADA */}
-                  <div className={`rounded-lg p-3 text-center transition-all ${
+                  <div className={`rounded-xl p-4 text-center transition-all ${
                     incident.status === 'NO_LOCAL' || incident.status === 'EM_EXECUCAO' || incident.status === 'CONCLUIDO'
-                      ? 'bg-yellow-800/50 border border-yellow-500' 
-                      : 'bg-gray-700/50 border border-gray-600 opacity-60'
+                      ? 'bg-white border border-amber-200 shadow-sm' 
+                      : 'bg-white/50 border border-slate-200 opacity-60'
                   }`}>
                     <div className="text-2xl mb-1">🎯</div>
-                    <p className="text-gray-300 text-xs font-semibold uppercase mb-1">Chegada</p>
+                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Chegada</p>
                     <p className={`text-xl font-bold ${
-                      incident?.arrivedAt ? 'text-yellow-300' : 'text-gray-500'
+                      incident?.arrivedAt ? 'text-amber-700' : 'text-slate-400'
                     }`}>
                       {incident?.arrivedAt
                         ? new Date(incident.arrivedAt).toLocaleTimeString('pt-BR', {
@@ -481,23 +480,23 @@ export default function TeamPanel() {
                         : '--:--'}
                     </p>
                     {incident?.arrivedAt && (
-                      <p className="text-yellow-400 text-xs mt-1">✓ Registrado</p>
+                      <p className="text-amber-600 text-xs mt-1 font-medium">✓ Registrado</p>
                     )}
                     {!incident?.arrivedAt && incident.status === 'EM_TRANSITO' && (
-                      <p className="text-gray-500 text-xs mt-1">A caminho...</p>
+                      <p className="text-slate-500 text-xs mt-1">A caminho...</p>
                     )}
                   </div>
 
                   {/* INÍCIO */}
-                  <div className={`rounded-lg p-3 text-center transition-all ${
+                  <div className={`rounded-xl p-4 text-center transition-all ${
                     incident.status === 'EM_EXECUCAO' || incident.status === 'CONCLUIDO'
-                      ? 'bg-orange-800/50 border border-orange-500' 
-                      : 'bg-gray-700/50 border border-gray-600 opacity-60'
+                      ? 'bg-white border border-orange-200 shadow-sm' 
+                      : 'bg-white/50 border border-slate-200 opacity-60'
                   }`}>
                     <div className="text-2xl mb-1">🔧</div>
-                    <p className="text-gray-300 text-xs font-semibold uppercase mb-1">Início</p>
+                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Início</p>
                     <p className={`text-xl font-bold ${
-                      incident?.startedAt ? 'text-orange-300' : 'text-gray-500'
+                      incident?.startedAt ? 'text-orange-700' : 'text-slate-400'
                     }`}>
                       {incident?.startedAt
                         ? new Date(incident.startedAt).toLocaleTimeString('pt-BR', {
@@ -508,23 +507,23 @@ export default function TeamPanel() {
                         : '--:--'}
                     </p>
                     {incident?.startedAt && (
-                      <p className="text-orange-400 text-xs mt-1">✓ Registrado</p>
+                      <p className="text-orange-600 text-xs mt-1 font-medium">✓ Registrado</p>
                     )}
                     {!incident?.startedAt && incident.status === 'NO_LOCAL' && (
-                      <p className="text-gray-500 text-xs mt-1">Aguardando...</p>
+                      <p className="text-slate-500 text-xs mt-1">Aguardando...</p>
                     )}
                   </div>
 
                   {/* FIM */}
-                  <div className={`rounded-lg p-3 text-center transition-all ${
+                  <div className={`rounded-xl p-4 text-center transition-all ${
                     incident.status === 'CONCLUIDO'
-                      ? 'bg-green-800/50 border-2 border-green-400' 
-                      : 'bg-gray-700/50 border border-gray-600 opacity-60'
+                      ? 'bg-white border-2 border-emerald-400 shadow-sm' 
+                      : 'bg-white/50 border border-slate-200 opacity-60'
                   }`}>
                     <div className="text-2xl mb-1">✅</div>
-                    <p className="text-gray-300 text-xs font-semibold uppercase mb-1">Fim</p>
+                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Fim</p>
                     <p className={`text-xl font-bold ${
-                      incident?.finishedAt ? 'text-green-300' : 'text-gray-500'
+                      incident?.finishedAt ? 'text-emerald-700' : 'text-slate-400'
                     }`}>
                       {incident?.finishedAt
                         ? new Date(incident.finishedAt).toLocaleTimeString('pt-BR', {
@@ -535,10 +534,10 @@ export default function TeamPanel() {
                         : '--:--'}
                     </p>
                     {incident?.finishedAt && (
-                      <p className="text-green-400 text-xs mt-1">✓ Concluído</p>
+                      <p className="text-emerald-600 text-xs mt-1 font-medium">✓ Concluído</p>
                     )}
                     {!incident?.finishedAt && incident.status === 'EM_EXECUCAO' && (
-                      <p className="text-gray-500 text-xs mt-1">Em execução...</p>
+                      <p className="text-slate-500 text-xs mt-1">Em execução...</p>
                     )}
                   </div>
                 </div>
@@ -546,7 +545,7 @@ export default function TeamPanel() {
                 {/* BARRA DE PROGRESSO VISUAL */}
                 {incident && incident.status !== 'CONCLUIDO' && (
                   <div className="mt-4">
-                    <div className="flex justify-between text-xs text-gray-400 mb-1">
+                    <div className="flex justify-between text-xs text-slate-500 mb-1 font-medium">
                       <span>Progresso</span>
                       <span>
                         {incident.status === 'PENDENTE' ? '0%' :
@@ -555,13 +554,13 @@ export default function TeamPanel() {
                          incident.status === 'EM_EXECUCAO' ? '75%' : '0%'}
                       </span>
                     </div>
-                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                       <div 
                         className={`h-full transition-all duration-500 ${
-                          incident.status === 'PENDENTE' ? 'bg-gray-500 w-0' :
+                          incident.status === 'PENDENTE' ? 'bg-slate-400 w-0' :
                           incident.status === 'EM_TRANSITO' ? 'bg-blue-500 w-1/4' :
-                          incident.status === 'NO_LOCAL' ? 'bg-yellow-500 w-2/4' :
-                          incident.status === 'EM_EXECUCAO' ? 'bg-orange-500 w-3/4' : 'bg-gray-500 w-0'
+                          incident.status === 'NO_LOCAL' ? 'bg-orange-500 w-2/4' :
+                          incident.status === 'EM_EXECUCAO' ? 'bg-blue-600 w-3/4' : 'bg-slate-400 w-0'
                         }`}
                       />
                     </div>
@@ -570,13 +569,44 @@ export default function TeamPanel() {
               </div>
             </>
           ) : (
-            <p className="text-gray-400">Nenhuma ocorrência atribuída.</p>
+            <p className="text-slate-500 p-6 text-center">Nenhuma ocorrência atribuída.</p>
           )}
         </div>
       </div>
 
+      {/* FILA DE OCORRÊNCIAS */}
+      {queuedIncidents.length > 0 && (
+        <div className="mt-8 relative z-10 corporate-card p-6">
+          <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800 mb-4">
+            📋 Fila de Ocorrências
+            <span className="bg-blue-50 text-blue-600 border border-blue-200 text-xs px-2 py-1 rounded-full">{queuedIncidents.length}</span>
+          </h2>
+          <div className="space-y-3">
+            {queuedIncidents.map((queued: any) => (
+              <div key={queued.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex justify-between items-center transition-colors hover:bg-slate-100 cursor-default">
+                <div>
+                  <h3 className="font-bold text-slate-800">{queued.title}</h3>
+                  <p className="text-sm text-slate-600">{queued.address}</p>
+                </div>
+                <div className="text-right flex flex-col items-end gap-1">
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${
+                    queued.priority === 'CRITICAL' ? 'bg-red-50 text-red-600 border border-red-200' :
+                    queued.priority === 'HIGH' ? 'bg-orange-50 text-orange-600 border border-orange-200' :
+                    queued.priority === 'NORMAL' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
+                    'bg-slate-100 text-slate-600 border border-slate-200'
+                  }`}>
+                    {queued.priority}
+                  </span>
+                  <span className="text-xs text-slate-500 font-medium tracking-wide">Aguardando</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* CHAT */}
-      <div className="mt-8 relative z-10 glass-card-dark rounded-2xl overflow-hidden border border-slate-700">
+      <div className="mt-8 relative z-10 corporate-card-dark p-6">
         <ChatPanel
           channel={incident ? incident.id : `equipe-${usuario.equipeId}`}
           senderName={usuario.nome}

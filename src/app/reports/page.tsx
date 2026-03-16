@@ -2,6 +2,11 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { HiOutlineDocumentArrowDown, HiOutlineTableCells, HiOutlineArrowLeft } from 'react-icons/hi2';
+import { generatePDF } from '@/lib/generatePDF';
+import { generateExcel } from '@/lib/generateExcel';
 import {
   BarChart,
   Bar,
@@ -468,12 +473,32 @@ export default function ReportsPage() {
 
         {/* Botão de exportar */}
         <div className="flex justify-end gap-4">
-          <button className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors">
-            <span>📥</span>
-            Exportar CSV
+          <button
+            onClick={() => {
+              try {
+                const filename = generateExcel(incidents, teams);
+                toast.success(`Excel exportado: ${filename}`);
+              } catch {
+                toast.error('Erro ao exportar Excel');
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+          >
+            <HiOutlineTableCells className="w-4 h-4" />
+            Exportar Excel
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-            <span>📄</span>
+          <button
+            onClick={() => {
+              try {
+                const filename = generatePDF(incidents, teams);
+                toast.success(`PDF exportado: ${filename}`);
+              } catch {
+                toast.error('Erro ao exportar PDF');
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
+            <HiOutlineDocumentArrowDown className="w-4 h-4" />
             Exportar PDF
           </button>
         </div>

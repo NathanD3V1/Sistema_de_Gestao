@@ -6,8 +6,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HiOutlineBolt, HiOutlineClipboardDocumentList, HiOutlineClock, HiOutlineCheckCircle, HiOutlineUserGroup, HiOutlinePlus, HiOutlinePencilSquare, HiOutlineTrash, HiOutlineMapPin, HiOutlineChatBubbleLeftRight, HiOutlineArrowRightOnRectangle, HiOutlineInformationCircle, HiOutlineTruck, HiOutlineTag, HiOutlineDocumentChartBar } from 'react-icons/hi2';
 import { ChatPanel } from '@/components/ChatPanel';
 import { AddressAutocomplete } from '@/components/AddressAutocomplete';
+import { Modal } from '@/components/Modal';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 
 // Import dinâmico do mapa
@@ -251,7 +257,7 @@ export default function Page() {
     });
 
     if (!res.ok) {
-      console.error('Falha ao criar', await res.text());
+      toast.error('Falha ao criar ocorrência');
       return;
     }
 
@@ -265,6 +271,7 @@ export default function Page() {
       teamId: '',
     });
     setSelectedId(id);
+    toast.success('Ocorrência criada com sucesso!');
   }
 
   // Editar ocorrência - abre o modal
@@ -302,12 +309,13 @@ export default function Page() {
     });
 
     if (!res.ok) {
-      console.error('Falha ao atualizar', await res.text());
+      toast.error('Falha ao atualizar ocorrência');
       return;
     }
 
     await mutate();
     setIsEditOpen(false);
+    toast.success('Ocorrência atualizada!');
   }
 
   // Deletar ocorrência
@@ -325,12 +333,13 @@ export default function Page() {
     });
 
     if (!res.ok) {
-      console.error('Falha ao excluir', await res.text());
+      toast.error('Falha ao excluir ocorrência');
       return;
     }
 
     await mutate();
     setSelectedId(null);
+    toast.success('Ocorrência excluída');
   }
 
   // Toggle mapa
@@ -439,12 +448,13 @@ export default function Page() {
 
     if (!res.ok) {
       const errorData = await res.json();
-      alert(errorData.error || 'Erro ao criar equipe');
+      toast.error(errorData.error || 'Erro ao criar equipe');
       return;
     }
 
     await mutateTeams();
     setIsTeamModalOpen(false);
+    toast.success('Equipe criada com sucesso!');
     setTeamForm({
       id: '',
       name: '',
@@ -470,12 +480,13 @@ export default function Page() {
 
     if (!res.ok) {
       const errorData = await res.json();
-      alert(errorData.error || 'Erro ao atualizar equipe');
+      toast.error(errorData.error || 'Erro ao atualizar equipe');
       return;
     }
 
     await mutateTeams();
     setIsTeamModalOpen(false);
+    toast.success('Equipe atualizada!');
   }
 
   // Excluir equipe
@@ -492,12 +503,13 @@ export default function Page() {
 
     if (!res.ok) {
       const errorData = await res.json();
-      alert(errorData.error || 'Erro ao excluir equipe');
+      toast.error(errorData.error || 'Erro ao excluir equipe');
       return;
     }
 
     await mutateTeams();
     setIsTeamModalOpen(false);
+    toast.success('Equipe excluída');
   }
 
   // Obter equipes para exibição (diretamente da API do Supabase)
@@ -537,9 +549,7 @@ export default function Page() {
         <div className="max-w-[1400px] mx-auto px-6 py-3 flex justify-between items-center">
           <Link href="/admin" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+              <HiOutlineBolt className="w-5 h-5 text-white" />
             </div>
             <div>
               <span className="text-white font-semibold text-base tracking-tight">Central de Operações</span>
@@ -547,44 +557,47 @@ export default function Page() {
             </div>
           </Link>
 
-          <button
-            onClick={() => {
-              localStorage.removeItem('usuarioLogado');
-              router.push('/');
-            }}
-            className="flex items-center gap-2 text-slate-400 text-sm hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-white/[0.04]"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Sair
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/reports"
+              className="flex items-center gap-2 text-slate-400 text-sm hover:text-sky-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-white/[0.04]"
+            >
+              <HiOutlineDocumentChartBar className="w-4 h-4" />
+              Relatórios
+            </Link>
+            <button
+              onClick={() => {
+                localStorage.removeItem('usuarioLogado');
+                router.push('/');
+              }}
+              className="flex items-center gap-2 text-slate-400 text-sm hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-white/[0.04]"
+            >
+              <HiOutlineArrowRightOnRectangle className="w-4 h-4" />
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
       <div className="max-w-[1400px] mx-auto px-6 py-8">
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="card-dark p-5 hover-lift stat-glow">
+          <motion.div className="card-dark p-5 hover-lift stat-glow" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}>
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-xl bg-sky-500/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+                <HiOutlineClipboardDocumentList className="w-5 h-5 text-sky-400" />
               </div>
               <div>
                 <div className="text-2xl font-bold text-white">{incidents.length}</div>
                 <p className="text-slate-500 text-xs font-medium">Total Ocorrências</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="card-dark p-5 hover-lift stat-glow">
+          <motion.div className="card-dark p-5 hover-lift stat-glow" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <HiOutlineClock className="w-5 h-5 text-amber-400" />
               </div>
               <div>
                 <div className="text-2xl font-bold text-white">
@@ -593,18 +606,16 @@ export default function Page() {
                 <p className="text-slate-500 text-xs font-medium">Aguardando</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="card-dark p-5 hover-lift stat-glow">
+          <motion.div className="card-dark p-5 hover-lift stat-glow" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="flex items-center gap-4">
               <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
                 displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? 'bg-red-500/10' : 'bg-emerald-500/10'
               }`}>
-                <svg className={`w-5 h-5 ${
+                <HiOutlineCheckCircle className={`w-5 h-5 ${
                   displayTeams.filter((t) => t.status === 'AVAILABLE').length === 0 ? 'text-red-400' : 'text-emerald-400'
-                }`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                }`} />
               </div>
               <div>
                 <div className={`text-2xl font-bold ${
@@ -619,26 +630,29 @@ export default function Page() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="card-dark p-5 hover-lift stat-glow">
+          <motion.div className="card-dark p-5 hover-lift stat-glow" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+                <HiOutlineUserGroup className="w-5 h-5 text-violet-400" />
               </div>
               <div>
                 <div className="text-2xl font-bold text-white">{displayTeams.length}</div>
                 <p className="text-slate-500 text-xs font-medium">Total de Equipes</p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Dashboard Charts */}
         {chartData.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8"
+          >
             <div className="card-dark p-5">
               <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Distribuição de Status</h3>
               <div className="h-56 w-full">
@@ -692,7 +706,7 @@ export default function Page() {
                 </ResponsiveContainer>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -743,44 +757,51 @@ export default function Page() {
                   </div>
                 )}
 
-                {filteredIncidents.map((incident) => {
-                  const prKey = normalizePriority(incident.priority);
-                  const pr = getPriorityColor(prKey);
-                  const st = getStatusColor(incident.uiStatus);
+                <AnimatePresence mode="popLayout">
+                  {filteredIncidents.map((incident) => {
+                    const prKey = normalizePriority(incident.priority);
+                    const pr = getPriorityColor(prKey);
+                    const st = getStatusColor(incident.uiStatus);
 
-                  return (
-                    <div
-                      key={incident.id}
-                      onClick={() => setSelectedId(incident.id)}
-                      className={`group p-3.5 rounded-xl border cursor-pointer transition-all ${
-                        selectedId === incident.id
-                          ? 'bg-sky-500/[0.08] border-sky-500/30'
-                          : 'bg-white/[0.02] border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04]'
-                      }`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-sm mb-2 text-slate-200 group-hover:text-white transition-colors truncate">{incident.title}</h3>
-                          <div className="flex gap-1.5 flex-wrap">
-                            <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${st.color} ${st.textColor}`}>
-                              {st.label}
-                            </span>
-                            <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${pr.color} ${pr.textColor}`}>
-                              {pr.label}
-                            </span>
+                    return (
+                      <motion.div
+                        key={incident.id}
+                        layout
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => setSelectedId(incident.id)}
+                        className={`group p-3.5 rounded-xl border cursor-pointer transition-all ${
+                          selectedId === incident.id
+                            ? 'bg-sky-500/[0.08] border-sky-500/30'
+                            : 'bg-white/[0.02] border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-sm mb-2 text-slate-200 group-hover:text-white transition-colors truncate">{incident.title}</h3>
+                            <div className="flex gap-1.5 flex-wrap">
+                              <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${st.color} ${st.textColor}`}>
+                                {st.label}
+                              </span>
+                              <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${pr.color} ${pr.textColor}`}>
+                                {pr.label}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="text-right ml-3 flex-shrink-0">
+                            <p className="text-xs text-slate-400 font-medium">{incident.teamLabel}</p>
+                            <p className="text-[10px] text-slate-600 mt-1">
+                              {formatDistanceToNow(new Date(incident.updatedAt), { locale: ptBR, addSuffix: true })}
+                            </p>
                           </div>
                         </div>
-
-                        <div className="text-right ml-3 flex-shrink-0">
-                          <p className="text-xs text-slate-400 font-medium">{incident.teamLabel}</p>
-                          <p className="text-[10px] text-slate-600 mt-1">
-                            {Math.floor((Date.now() - new Date(incident.updatedAt).getTime()) / 60000)} min atrás
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
 
                 {filteredIncidents.length === 0 && !isLoading && (
                   <div className="text-slate-600 text-sm py-8 text-center">Nenhuma ocorrência para o filtro selecionado.</div>
@@ -1020,356 +1041,299 @@ export default function Page() {
       </div>
 
       {/* MODAL - Nova Ocorrência */}
-      {isCreateOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="bg-[#111827] border border-white/[0.06] rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-8 h-8 bg-sky-500/10 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
-              </div>
-              <h3 className="text-base font-semibold text-slate-200">Nova Ocorrência</h3>
+      <Modal
+        open={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+        title="Nova Ocorrência"
+        icon={<HiOutlinePlus className="w-4 h-4 text-sky-400" />}
+      >
+        <form className="space-y-4" onSubmit={handleCreateIncident}>
+          <div>
+            <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Título</label>
+            <input
+              className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
+              value={form.title}
+              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+              required
+              placeholder="Ex: Curto-circuito em poste"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Endereço</label>
+            <AddressAutocomplete
+              value={form.address}
+              onChange={(address) => setForm((f) => ({ ...f, address }))}
+              placeholder="Digite o endereço da ocorrência..."
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Prioridade</label>
+              <select
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={form.priority}
+                onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as any }))}
+              >
+                <option value="LOW">Baixa</option>
+                <option value="NORMAL">Normal</option>
+                <option value="HIGH">Alta</option>
+                <option value="CRITICAL">Crítica</option>
+              </select>
             </div>
 
-            <form className="space-y-3" onSubmit={handleCreateIncident}>
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Título</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
-                  value={form.title}
-                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                  required
-                  placeholder="Título da ocorrência"
-                />
-              </div>
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Status</label>
+              <select
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={form.uiStatus}
+                onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
+              >
+                <option value="PENDING">Aguardando</option>
+                <option value="IN_TRANSIT">Em Trânsito</option>
+                <option value="ON_SITE">No Local</option>
+                <option value="COMPLETED">Concluído</option>
+              </select>
+            </div>
 
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Endereço</label>
-                <AddressAutocomplete
-                  value={form.address}
-                  onChange={(address) => setForm((f) => ({ ...f, address }))}
-                  placeholder="Digite o endereço..."
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Prioridade</label>
-                  <select
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={form.priority}
-                    onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as any }))}
-                  >
-                    <option value="LOW">Baixa</option>
-                    <option value="NORMAL">Normal</option>
-                    <option value="HIGH">Alta</option>
-                    <option value="CRITICAL">Crítica</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Status</label>
-                  <select
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={form.uiStatus}
-                    onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
-                  >
-                    <option value="PENDING">Aguardando</option>
-                    <option value="IN_TRANSIT">Em Trânsito</option>
-                    <option value="ON_SITE">No Local</option>
-                    <option value="COMPLETED">Concluído</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Equipe</label>
-                  <select
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={form.teamId}
-                    onChange={(e) => setForm((f) => ({ ...f, teamId: e.target.value }))}
-                  >
-                    {displayTeams.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-3">
-                <button
-                  type="button"
-                  onClick={() => setIsCreateOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
-                >
-                  Criar Ocorrência
-                </button>
-              </div>
-            </form>
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Equipe</label>
+              <select
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={form.teamId}
+                onChange={(e) => setForm((f) => ({ ...f, teamId: e.target.value }))}
+              >
+                <option value="">Selecione...</option>
+                {displayTeams.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
-      )}
+
+          <div className="flex justify-end gap-3 pt-4 mt-2 border-t border-white/[0.06]">
+            <button
+              type="button"
+              onClick={() => setIsCreateOpen(false)}
+              className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
+            >
+              Criar Ocorrência
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* MODAL - Editar Ocorrência */}
-      {isEditOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="bg-[#111827] border border-white/[0.06] rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-              </div>
-              <h3 className="text-base font-semibold text-slate-200">Editar Ocorrência</h3>
+      <Modal
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        title="Editar Ocorrência"
+        icon={<HiOutlinePencilSquare className="w-4 h-4 text-amber-400" />}
+        iconBg="bg-amber-500/10"
+      >
+        <form className="space-y-4" onSubmit={handleUpdateIncident}>
+          <div>
+            <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Título</label>
+            <input
+              className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
+              value={form.title}
+              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Endereço</label>
+            <AddressAutocomplete
+              value={form.address}
+              onChange={(address) => setForm((f) => ({ ...f, address }))}
+              placeholder="Digite o endereço..."
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Prioridade</label>
+              <select
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={form.priority}
+                onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as any }))}
+              >
+                <option value="LOW">Baixa</option>
+                <option value="NORMAL">Normal</option>
+                <option value="HIGH">Alta</option>
+                <option value="CRITICAL">Crítica</option>
+              </select>
             </div>
 
-            <form className="space-y-3" onSubmit={handleUpdateIncident}>
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Título</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
-                  value={form.title}
-                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                  required
-                />
-              </div>
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Status</label>
+              <select
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={form.uiStatus}
+                onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
+              >
+                <option value="PENDING">Aguardando</option>
+                <option value="IN_TRANSIT">Em Trânsito</option>
+                <option value="ON_SITE">No Local</option>
+                <option value="COMPLETED">Concluído</option>
+              </select>
+            </div>
 
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Endereço</label>
-                <AddressAutocomplete
-                  value={form.address}
-                  onChange={(address) => setForm((f) => ({ ...f, address }))}
-                  placeholder="Digite o endereço..."
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Prioridade</label>
-                  <select
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={form.priority}
-                    onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as any }))}
-                  >
-                    <option value="LOW">Baixa</option>
-                    <option value="NORMAL">Normal</option>
-                    <option value="HIGH">Alta</option>
-                    <option value="CRITICAL">Crítica</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Status</label>
-                  <select
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={form.uiStatus}
-                    onChange={(e) => setForm((f) => ({ ...f, uiStatus: e.target.value as any }))}
-                  >
-                    <option value="PENDING">Aguardando</option>
-                    <option value="IN_TRANSIT">Em Trânsito</option>
-                    <option value="ON_SITE">No Local</option>
-                    <option value="COMPLETED">Concluído</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Equipe</label>
-                  <select
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={form.teamId}
-                    onChange={(e) => setForm((f) => ({ ...f, teamId: e.target.value }))}
-                  >
-                    {displayTeams.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-3">
-                <button
-                  type="button"
-                  onClick={() => setIsEditOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
-                >
-                  Salvar Alterações
-                </button>
-              </div>
-            </form>
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Equipe</label>
+              <select
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={form.teamId}
+                onChange={(e) => setForm((f) => ({ ...f, teamId: e.target.value }))}
+              >
+                {displayTeams.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
-      )}
+
+          <div className="flex justify-end gap-3 pt-4 mt-2 border-t border-white/[0.06]">
+            <button
+              type="button"
+              onClick={() => setIsEditOpen(false)}
+              className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
+            >
+              Salvar Alterações
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* MODAL - Gerenciar Equipes */}
-      {isTeamModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="bg-[#111827] border border-white/[0.06] rounded-2xl p-6 w-full max-w-lg mx-4 animate-slide-in shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-violet-500/10 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-base font-semibold text-slate-200">
-                  {selectedTeamId ? 'Editar Equipe' : 'Nova Equipe'}
-                </h3>
-              </div>
-              <button
-                onClick={() => setIsTeamModalOpen(false)}
-                className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-500 hover:text-slate-300 flex items-center justify-center transition-all"
+      <Modal
+        open={isTeamModalOpen}
+        onOpenChange={setIsTeamModalOpen}
+        title={selectedTeamId ? 'Editar Equipe' : 'Nova Equipe'}
+        icon={<HiOutlineUserGroup className="w-4 h-4 text-violet-400" />}
+        iconBg="bg-violet-500/10"
+      >
+        <form className="space-y-4" onSubmit={selectedTeamId ? handleUpdateTeam : handleCreateTeam}>
+          <div>
+            <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">ID da Equipe</label>
+            <input
+              className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600 disabled:opacity-50"
+              value={teamForm.id}
+              onChange={(e) => setTeamForm((f) => ({ ...f, id: e.target.value }))}
+              required
+              disabled={!!selectedTeamId}
+              placeholder="ex: eqp-001"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Nome da Equipe</label>
+            <input
+              className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
+              value={teamForm.name}
+              onChange={(e) => setTeamForm((f) => ({ ...f, name: e.target.value }))}
+              required
+              placeholder="ex: Equipe de Manutenção Sul"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Matrícula</label>
+              <input
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
+                value={teamForm.matricula}
+                onChange={(e) => setTeamForm((f) => ({ ...f, matricula: e.target.value }))}
+                placeholder="ex: 1001"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Veículo</label>
+              <input
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
+                value={teamForm.vehicle}
+                onChange={(e) => setTeamForm((f) => ({ ...f, vehicle: e.target.value }))}
+                placeholder="Placa ou modelo"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Status</label>
+              <select
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={teamForm.status}
+                onChange={(e) => setTeamForm((f) => ({ ...f, status: e.target.value }))}
               >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+                <option value="AVAILABLE">Disponível</option>
+                <option value="ON_CALL">Em Chamado</option>
+                <option value="IN_TRANSIT">Em Trânsito</option>
+                <option value="ON_SITE">No Local</option>
+                <option value="BUSY">Ocupada</option>
+              </select>
             </div>
 
-            <form className="space-y-3" onSubmit={selectedTeamId ? handleUpdateTeam : handleCreateTeam}>
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">ID da Equipe</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600 disabled:opacity-50"
-                  value={teamForm.id}
-                  onChange={(e) => setTeamForm((f) => ({ ...f, id: e.target.value }))}
-                  required
-                  disabled={!!selectedTeamId}
-                  placeholder="ex: eqp-001"
-                />
-                {!selectedTeamId && (
-                  <p className="text-[10px] text-slate-600 mt-1">ID único para identificar a equipe</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Nome da Equipe</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
-                  value={teamForm.name}
-                  onChange={(e) => setTeamForm((f) => ({ ...f, name: e.target.value }))}
-                  required
-                  placeholder="ex: Equipe de Manutenção Sul"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Matrícula</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
-                  value={teamForm.matricula}
-                  onChange={(e) => setTeamForm((f) => ({ ...f, matricula: e.target.value }))}
-                  placeholder="ex: 1001"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Status</label>
-                  <select
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={teamForm.status}
-                    onChange={(e) => setTeamForm((f) => ({ ...f, status: e.target.value }))}
-                  >
-                    <option value="AVAILABLE">Disponível</option>
-                    <option value="ON_CALL">Em Chamado</option>
-                    <option value="IN_TRANSIT">Em Trânsito</option>
-                    <option value="ON_SITE">No Local</option>
-                    <option value="BUSY">Ocupada</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-500 font-medium mb-1">Membros</label>
-                  <input
-                    type="number"
-                    min="1"
-                    className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
-                    value={teamForm.members}
-                    onChange={(e) => setTeamForm((f) => ({ ...f, members: parseInt(e.target.value) || 1 }))}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Localização</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
-                  value={teamForm.location}
-                  onChange={(e) => setTeamForm((f) => ({ ...f, location: e.target.value }))}
-                  placeholder="ex: Zona Sul"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Veículo</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
-                  value={teamForm.vehicle}
-                  onChange={(e) => setTeamForm((f) => ({ ...f, vehicle: e.target.value }))}
-                  placeholder="ex: Fiat Strada - ABC-1234"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-slate-500 font-medium mb-1">Telefone</label>
-                <input
-                  className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none placeholder:text-slate-600"
-                  value={teamForm.phone}
-                  onChange={(e) => setTeamForm((f) => ({ ...f, phone: e.target.value }))}
-                  placeholder="ex: (11) 99999-0001"
-                />
-              </div>
-
-              <div className="flex justify-between gap-2 pt-3">
-                {selectedTeamId && (
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteTeam(selectedTeamId)}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-all"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Excluir
-                  </button>
-                )}
-                <div className="flex gap-2 ml-auto">
-                  <button
-                    type="button"
-                    onClick={() => setIsTeamModalOpen(false)}
-                    className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
-                  >
-                    {selectedTeamId ? 'Salvar' : 'Criar'}
-                  </button>
-                </div>
-              </div>
-            </form>
+            <div>
+              <label className="block text-xs text-slate-500 font-medium mb-1.5 ml-0.5">Membros</label>
+              <input
+                type="number"
+                min="1"
+                className="w-full bg-white/[0.04] text-slate-200 border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm transition-all focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 outline-none"
+                value={teamForm.members}
+                onChange={(e) => setTeamForm((f) => ({ ...f, members: parseInt(e.target.value) || 1 }))}
+                required
+              />
+            </div>
           </div>
-        </div>
-      )}
+
+          <div className="flex justify-between gap-3 pt-5 mt-2 border-t border-white/[0.06]">
+            {selectedTeamId && (
+              <button
+                type="button"
+                onClick={() => handleDeleteTeam(selectedTeamId)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-all"
+              >
+                <HiOutlineTrash className="w-3.5 h-3.5" />
+                Excluir
+              </button>
+            )}
+            <div className="flex gap-2 ml-auto">
+              <button
+                type="button"
+                onClick={() => setIsTeamModalOpen(false)}
+                className="px-4 py-2 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] transition-all text-sm font-medium"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-sky-500/20"
+              >
+                {selectedTeamId ? 'Salvar' : 'Criar'}
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

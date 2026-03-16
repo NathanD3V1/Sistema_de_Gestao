@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
+import { Toaster } from 'sonner';
 import './globals.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -20,7 +21,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={roboto.className}>{children}</body>
+      <body className={roboto.className}>
+        {children}
+        <Toaster
+          theme="dark"
+          position="top-right"
+          richColors
+          toastOptions={{
+            style: {
+              background: '#111827',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: '#e2e8f0',
+            },
+          }}
+        />
+      </body>
     </html>
   );
 }

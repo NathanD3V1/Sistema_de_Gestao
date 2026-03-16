@@ -223,22 +223,25 @@ export default function TeamPanel() {
 
   if (!usuario) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <p className="text-gray-400">Carregando dados...</p>
+      <div className="min-h-screen bg-[#0a0e1a] flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 relative overflow-hidden text-slate-800">
-      {/* Background blobs removidos para um visual mais profissional */}
-
+    <div className="min-h-screen bg-[#0a0e1a] p-4 md:p-6 relative overflow-hidden text-slate-300">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-8 relative z-10">
+      <div className="flex justify-between items-center mb-6 relative z-10">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Painel da Equipe</h1>
-          <p className="text-slate-500 font-medium">
-            Olá, <span className="text-slate-700">{usuario.nome}</span> | Matrícula: <span className="text-slate-700">{usuario.matricula}</span>
+          <h1 className="text-lg font-semibold text-slate-200 flex items-center gap-2">
+            <svg className="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Painel da Equipe
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Olá, <span className="text-slate-400">{usuario.nome}</span> ({usuario.cargo === 'EQUIPE' ? 'Líder' : usuario.cargo}) | Matrícula: <span className="text-slate-400 font-mono">{usuario.matricula}</span>
           </p>
         </div>
         <button
@@ -246,97 +249,106 @@ export default function TeamPanel() {
             localStorage.removeItem('usuarioLogado');
             router.push('/');
           }}
-          className="text-red-400 text-sm hover:underline"
+          className="text-xs text-slate-500 hover:text-red-400 transition-colors flex items-center gap-1"
         >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
           Sair
         </button>
       </div>
 
       {/* CONTEÚDO PRINCIPAL */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative z-10">
         
-        <div className="corporate-card p-6">
-          <h2 className="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">🚜 Dados da Viatura</h2>
+        {/* DADOS DA VIATURA */}
+        <div className="card-dark p-5">
+          <h2 className="text-sm font-semibold text-slate-200 mb-4 flex items-center gap-2">
+            <svg className="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            Dados da Viatura
+          </h2>
           
-          <div className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+          <div className="space-y-3 bg-white/[0.02] rounded-xl p-3.5 border border-white/[0.04]">
             {/* Status GPS */}
             <div>
-              <p className="text-slate-500 text-sm font-medium">Rastreamento GPS</p>
-              <div className="flex items-center gap-2 mt-1 bg-white p-2 rounded-lg border border-slate-200 inline-flex">
-                <span className={`w-3 h-3 rounded-full shadow-sm ${
-                  gpsStatus === 'active' ? 'bg-green-500 animate-pulse' :
-                  gpsStatus === 'searching' ? 'bg-amber-500 animate-pulse' :
-                  gpsStatus === 'error' ? 'bg-red-500' : 'bg-slate-400'
+              <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-1.5">Rastreamento GPS</p>
+              <div className="flex items-center gap-2 bg-white/[0.03] p-2 rounded-lg border border-white/[0.04] inline-flex">
+                <span className={`w-2 h-2 rounded-full ${
+                  gpsStatus === 'active' ? 'bg-emerald-400 animate-pulse' :
+                  gpsStatus === 'searching' ? 'bg-amber-400 animate-pulse' :
+                  gpsStatus === 'error' ? 'bg-red-400' : 'bg-slate-600'
                 }`}></span>
-                <span className={`text-sm font-bold tracking-wide ${
-                  gpsStatus === 'active' ? 'text-green-700' :
-                  gpsStatus === 'searching' ? 'text-amber-700' :
-                  gpsStatus === 'error' ? 'text-red-700' : 'text-slate-600'
+                <span className={`text-xs font-semibold ${
+                  gpsStatus === 'active' ? 'text-emerald-400' :
+                  gpsStatus === 'searching' ? 'text-amber-400' :
+                  gpsStatus === 'error' ? 'text-red-400' : 'text-slate-500'
                 }`}>
-                  {gpsStatus === 'active' ? 'Ativo - Coordenadas OK' :
+                  {gpsStatus === 'active' ? 'Ativo — Coordenadas OK' :
                    gpsStatus === 'searching' ? 'Buscando sinal GPS...' :
                    gpsStatus === 'error' ? 'Erro de Permissão' : 'Inativo'}
                 </span>
               </div>
               {lastCoords && (
-                <p className="text-xs text-slate-500 mt-2 font-mono bg-slate-100 px-2 py-1 rounded inline-block">
+                <p className="text-[10px] text-slate-600 mt-1.5 font-mono bg-white/[0.03] px-2 py-0.5 rounded inline-block">
                   {lastCoords.lat.toFixed(6)}, {lastCoords.lng.toFixed(6)}
                 </p>
               )}
             </div>
 
-            <div className="pt-2 border-t border-slate-200">
-              <p className="text-slate-500 text-sm font-medium">Equipe</p>
-              <p className="text-slate-800 font-bold text-lg">{usuario.equipeId === 'eqp-1' ? 'Equipe A' : usuario.equipeId === 'eqp-2' ? 'Equipe B' : usuario.equipeId === 'eqp-3' ? 'Equipe C' : usuario.equipeId}</p>
+            <div className="pt-2 border-t border-white/[0.04]">
+              <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Equipe</p>
+              <p className="text-slate-200 font-semibold text-sm mt-0.5">{usuario.equipeId === 'eqp-1' ? 'Equipe A' : usuario.equipeId === 'eqp-2' ? 'Equipe B' : usuario.equipeId === 'eqp-3' ? 'Equipe C' : usuario.equipeId}</p>
             </div>
             <div>
-              <p className="text-slate-500 text-sm font-medium">Veículo</p>
-              <p className="text-slate-800 font-bold">{usuario.equipeId === 'eqp-1' ? 'Fiat Strada - OEX-9090' : usuario.equipeId === 'eqp-2' ? 'Ford Ranger - ABC-1234' : usuario.equipeId === 'eqp-3' ? 'Chevrolet S10 - XYZ-5678' : 'Não atribuído'}</p>
+              <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Veículo</p>
+              <p className="text-slate-200 font-semibold text-sm mt-0.5">{usuario.equipeId === 'eqp-1' ? 'Fiat Strada - OEX-9090' : usuario.equipeId === 'eqp-2' ? 'Ford Ranger - ABC-1234' : usuario.equipeId === 'eqp-3' ? 'Chevrolet S10 - XYZ-5678' : 'Não atribuído'}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Status</p>
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+              <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Status</p>
+              <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-400">
                 Disponível
               </span>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Contato</p>
-              <p className="text-white font-semibold">(11) 99999-0001</p>
+              <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Contato</p>
+              <p className="text-slate-300 font-medium text-sm mt-0.5">(11) 99999-0001</p>
             </div>
           </div>
         </div>
 
         {/* OCORRÊNCIA ATUAL */}
-        <div className="lg:col-span-2 corporate-card p-6">
-          <h2 className="text-xl font-bold text-slate-800 mb-6">Ocorrência Atual</h2>
+        <div className="lg:col-span-2 card-dark p-5">
+          <h2 className="text-sm font-semibold text-slate-200 mb-4">Ocorrência Atual</h2>
 
           {isLoading ? (
-            <p className="text-slate-500">Carregando ocorrência...</p>
+            <p className="text-slate-500 text-sm">Carregando ocorrência...</p>
           ) : incident ? (
             <>
-              <div className="bg-slate-50 border border-slate-200 p-5 rounded-xl mb-6 shadow-sm">
-                <h3 className="text-xl font-bold text-slate-800 mb-1">{incident.title}</h3>
-                <p className="text-slate-600 mb-3">{incident.address}</p>
+              <div className="bg-white/[0.03] border border-white/[0.06] p-4 rounded-xl mb-4">
+                <h3 className="text-base font-semibold text-slate-200 mb-0.5">{incident.title}</h3>
+                <p className="text-slate-400 text-sm mb-3">{incident.address}</p>
 
-                <div className="mt-2 flex gap-2">
-                  <span className="bg-red-50 text-red-700 border border-red-200 px-3 py-1 rounded text-xs font-bold">
+                <div className="flex gap-2">
+                  <span className="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded text-[10px] font-semibold">
                     PRIORIDADE {incident.priority}
                   </span>
-                  <span className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded text-xs font-bold">
+                  <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded text-[10px] font-semibold">
                     STATUS: {incident.status}
                   </span>
                 </div>
               </div>
 
               {/* BOTÕES DE AÇÃO */}
-              <div className="space-y-3 mt-4">
+              <div className="space-y-2 mt-3">
                 {incident.status === 'PENDENTE' && (
                   <button
                     onClick={() => handleStatusChange('EM_TRANSITO')}
-                    className="w-full relative bg-blue-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-blue-700 shadow-sm hover:shadow"
+                    className="w-full bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3.5 rounded-xl transition-all text-sm hover:shadow-lg hover:shadow-sky-500/20"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                       INICIAR DESLOCAMENTO <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    <span className="flex items-center justify-center gap-2">
+                       INICIAR DESLOCAMENTO →
                     </span>
                   </button>
                 )}
@@ -344,25 +356,28 @@ export default function TeamPanel() {
                 {incident.status === 'EM_TRANSITO' && (
                   <button
                     onClick={() => handleStatusChange('NO_LOCAL')}
-                    className="w-full relative bg-amber-500 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-amber-600 shadow-sm hover:shadow"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-xl transition-all text-sm hover:shadow-lg hover:shadow-amber-500/20"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      CONFIRMAR CHEGADA NO LOCAL <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    <span className="flex items-center justify-center gap-2">
+                      CONFIRMAR CHEGADA NO LOCAL →
                     </span>
                   </button>
                 )}
 
                 {incident.status === 'NO_LOCAL' && (
                   <>
-                    <p className="text-amber-600 text-sm text-center font-medium my-2">
-                      ⚠️ Faça a APR antes de iniciar.
+                    <p className="text-amber-400/80 text-xs text-center font-medium my-2 flex items-center justify-center gap-1.5">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                      </svg>
+                      Faça a APR antes de iniciar.
                     </p>
                     <button
                       onClick={() => handleStatusChange('EM_EXECUCAO')}
-                      className="w-full relative bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-orange-700 shadow-sm hover:shadow"
+                      className="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold py-3.5 rounded-xl transition-all text-sm hover:shadow-lg hover:shadow-orange-500/20"
                     >
-                      <span className="relative z-10 flex items-center justify-center gap-2">
-                        INICIAR REPARO (APR OK) <span className="group-hover:translate-x-1 transition-transform">→</span>
+                      <span className="flex items-center justify-center gap-2">
+                        INICIAR REPARO (APR OK) →
                       </span>
                     </button>
                   </>
@@ -371,20 +386,20 @@ export default function TeamPanel() {
                 {incident.status === 'EM_EXECUCAO' && (
                   <button
                     onClick={() => handleStatusChange('CONCLUIDO')}
-                    className="w-full relative bg-emerald-600 text-white font-bold py-4 rounded-xl transition-all duration-300 hover:bg-emerald-700 shadow-sm hover:shadow"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3.5 rounded-xl transition-all text-sm hover:shadow-lg hover:shadow-emerald-500/20"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      FINALIZAR OCORRÊNCIA <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    <span className="flex items-center justify-center gap-2">
+                      FINALIZAR OCORRÊNCIA →
                     </span>
                   </button>
                 )}
 
                 {incident.status === 'CONCLUIDO' && (
-                  <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
-                    <p className="text-emerald-700 font-bold text-lg">
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl text-center">
+                    <p className="text-emerald-400 font-semibold text-sm">
                       Ocorrência Baixada com Sucesso
                     </p>
-                    <p className="text-emerald-600 text-sm">
+                    <p className="text-emerald-400/60 text-xs mt-1">
                       Aguarde nova atribuição da central.
                     </p>
                   </div>
@@ -393,19 +408,19 @@ export default function TeamPanel() {
                 {/* Botão para ver mapa */}
                 <button
                   onClick={() => setShowMap(!showMap)}
-                  className={`w-full mt-4 py-4 rounded-xl font-semibold transition-all duration-300 ${
-                    showMap 
-                      ? 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600' 
-                      : 'glass-card hover-lift text-white border border-white/10'
-                  }`}
+                  className="w-full mt-3 py-3 rounded-xl font-medium transition-all text-sm bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] flex items-center justify-center gap-2"
                 >
-                  {showMap ? '🗺️ Ocultar Mapa' : '📍 Ver Localização no Mapa'}
+                  <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {showMap ? 'Ocultar Mapa' : 'Ver Localização no Mapa'}
                 </button>
               </div>
 
               {/* Mapa de localização */}
               {showMap && (
-                <div className="mt-6 rounded-2xl overflow-hidden border border-slate-700 shadow-xl">
+                <div className="mt-4 rounded-xl overflow-hidden border border-white/[0.06]">
                   <TeamLiveMap 
                     teamName={usuario?.equipeId} 
                     destinationCoords={incidentCoords}
@@ -413,36 +428,35 @@ export default function TeamPanel() {
                 </div>
               )}
 
-              {/* CARD DE HORÁRIOS - DESTAQUE */}
-              <div className={`mt-8 rounded-2xl p-5 border transition-colors duration-500 shadow-sm ${
-                incident.status === 'CONCLUIDO' ? 'bg-emerald-50 border-emerald-200' :
-                incident.status === 'EM_EXECUCAO' ? 'bg-orange-50 border-orange-200' :
-                incident.status === 'NO_LOCAL' ? 'bg-amber-50 border-amber-200' :
-                incident.status === 'EM_TRANSITO' ? 'bg-blue-50 border-blue-200' :
-                'bg-slate-50 border-slate-200'
-              }`}>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <span className="text-2xl">⏱️</span> Cronograma da Ocorrência
+              {/* CRONOGRAMA */}
+              <div className="mt-6 card-dark p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Cronograma da Ocorrência
                   </h3>
                   {incident.status === 'CONCLUIDO' && (
-                    <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">
-                      ✅ CONCLUÍDO
+                    <span className="bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded">
+                      CONCLUÍDO
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {/* SAÍDA */}
-                  <div className={`rounded-xl p-4 text-center transition-all ${
+                  <div className={`rounded-lg p-3 text-center transition-all ${
                     incident.status === 'EM_TRANSITO' || incident.status === 'NO_LOCAL' || incident.status === 'EM_EXECUCAO' || incident.status === 'CONCLUIDO'
-                      ? 'bg-white border border-blue-200 shadow-sm' 
-                      : 'bg-white/50 border border-slate-200 opacity-60'
+                      ? 'bg-sky-500/8 border border-sky-500/15' 
+                      : 'bg-white/[0.02] border border-white/[0.04] opacity-50'
                   }`}>
-                    <div className="text-2xl mb-1">🚀</div>
-                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Saída</p>
-                    <p className={`text-xl font-bold ${
-                      incident?.departedAt ? 'text-blue-700' : 'text-slate-400'
+                    <svg className="w-5 h-5 mx-auto mb-1 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    <p className="text-[10px] text-slate-500 font-semibold uppercase mb-0.5">Saída</p>
+                    <p className={`text-lg font-bold ${
+                      incident?.departedAt ? 'text-sky-400' : 'text-slate-600'
                     }`}>
                       {incident?.departedAt
                         ? new Date(incident.departedAt).toLocaleTimeString('pt-BR', {
@@ -452,24 +466,24 @@ export default function TeamPanel() {
                           })
                         : '--:--'}
                     </p>
-                    {incident?.departedAt && (
-                      <p className="text-blue-600 text-xs mt-1 font-medium">✓ Registrado</p>
-                    )}
                     {!incident?.departedAt && incident.status === 'PENDENTE' && (
-                      <p className="text-slate-500 text-xs mt-1">Aguardando...</p>
+                      <p className="text-slate-600 text-[10px] mt-0.5">Aguardando...</p>
                     )}
                   </div>
 
                   {/* CHEGADA */}
-                  <div className={`rounded-xl p-4 text-center transition-all ${
+                  <div className={`rounded-lg p-3 text-center transition-all ${
                     incident.status === 'NO_LOCAL' || incident.status === 'EM_EXECUCAO' || incident.status === 'CONCLUIDO'
-                      ? 'bg-white border border-amber-200 shadow-sm' 
-                      : 'bg-white/50 border border-slate-200 opacity-60'
+                      ? 'bg-amber-500/8 border border-amber-500/15' 
+                      : 'bg-white/[0.02] border border-white/[0.04] opacity-50'
                   }`}>
-                    <div className="text-2xl mb-1">🎯</div>
-                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Chegada</p>
-                    <p className={`text-xl font-bold ${
-                      incident?.arrivedAt ? 'text-amber-700' : 'text-slate-400'
+                    <svg className="w-5 h-5 mx-auto mb-1 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p className="text-[10px] text-slate-500 font-semibold uppercase mb-0.5">Chegada</p>
+                    <p className={`text-lg font-bold ${
+                      incident?.arrivedAt ? 'text-amber-400' : 'text-slate-600'
                     }`}>
                       {incident?.arrivedAt
                         ? new Date(incident.arrivedAt).toLocaleTimeString('pt-BR', {
@@ -479,24 +493,24 @@ export default function TeamPanel() {
                           })
                         : '--:--'}
                     </p>
-                    {incident?.arrivedAt && (
-                      <p className="text-amber-600 text-xs mt-1 font-medium">✓ Registrado</p>
-                    )}
                     {!incident?.arrivedAt && incident.status === 'EM_TRANSITO' && (
-                      <p className="text-slate-500 text-xs mt-1">A caminho...</p>
+                      <p className="text-slate-600 text-[10px] mt-0.5">A caminho...</p>
                     )}
                   </div>
 
                   {/* INÍCIO */}
-                  <div className={`rounded-xl p-4 text-center transition-all ${
+                  <div className={`rounded-lg p-3 text-center transition-all ${
                     incident.status === 'EM_EXECUCAO' || incident.status === 'CONCLUIDO'
-                      ? 'bg-white border border-orange-200 shadow-sm' 
-                      : 'bg-white/50 border border-slate-200 opacity-60'
+                      ? 'bg-orange-500/8 border border-orange-500/15' 
+                      : 'bg-white/[0.02] border border-white/[0.04] opacity-50'
                   }`}>
-                    <div className="text-2xl mb-1">🔧</div>
-                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Início</p>
-                    <p className={`text-xl font-bold ${
-                      incident?.startedAt ? 'text-orange-700' : 'text-slate-400'
+                    <svg className="w-5 h-5 mx-auto mb-1 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p className="text-[10px] text-slate-500 font-semibold uppercase mb-0.5">Início</p>
+                    <p className={`text-lg font-bold ${
+                      incident?.startedAt ? 'text-orange-400' : 'text-slate-600'
                     }`}>
                       {incident?.startedAt
                         ? new Date(incident.startedAt).toLocaleTimeString('pt-BR', {
@@ -506,24 +520,23 @@ export default function TeamPanel() {
                           })
                         : '--:--'}
                     </p>
-                    {incident?.startedAt && (
-                      <p className="text-orange-600 text-xs mt-1 font-medium">✓ Registrado</p>
-                    )}
                     {!incident?.startedAt && incident.status === 'NO_LOCAL' && (
-                      <p className="text-slate-500 text-xs mt-1">Aguardando...</p>
+                      <p className="text-slate-600 text-[10px] mt-0.5">Aguardando...</p>
                     )}
                   </div>
 
                   {/* FIM */}
-                  <div className={`rounded-xl p-4 text-center transition-all ${
+                  <div className={`rounded-lg p-3 text-center transition-all ${
                     incident.status === 'CONCLUIDO'
-                      ? 'bg-white border-2 border-emerald-400 shadow-sm' 
-                      : 'bg-white/50 border border-slate-200 opacity-60'
+                      ? 'bg-emerald-500/8 border border-emerald-500/15' 
+                      : 'bg-white/[0.02] border border-white/[0.04] opacity-50'
                   }`}>
-                    <div className="text-2xl mb-1">✅</div>
-                    <p className="text-slate-500 text-xs font-semibold uppercase mb-1">Fim</p>
-                    <p className={`text-xl font-bold ${
-                      incident?.finishedAt ? 'text-emerald-700' : 'text-slate-400'
+                    <svg className="w-5 h-5 mx-auto mb-1 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-[10px] text-slate-500 font-semibold uppercase mb-0.5">Fim</p>
+                    <p className={`text-lg font-bold ${
+                      incident?.finishedAt ? 'text-emerald-400' : 'text-slate-600'
                     }`}>
                       {incident?.finishedAt
                         ? new Date(incident.finishedAt).toLocaleTimeString('pt-BR', {
@@ -533,19 +546,16 @@ export default function TeamPanel() {
                           })
                         : '--:--'}
                     </p>
-                    {incident?.finishedAt && (
-                      <p className="text-emerald-600 text-xs mt-1 font-medium">✓ Concluído</p>
-                    )}
                     {!incident?.finishedAt && incident.status === 'EM_EXECUCAO' && (
-                      <p className="text-slate-500 text-xs mt-1">Em execução...</p>
+                      <p className="text-slate-600 text-[10px] mt-0.5">Em execução...</p>
                     )}
                   </div>
                 </div>
 
-                {/* BARRA DE PROGRESSO VISUAL */}
+                {/* BARRA DE PROGRESSO */}
                 {incident && incident.status !== 'CONCLUIDO' && (
-                  <div className="mt-4">
-                    <div className="flex justify-between text-xs text-slate-500 mb-1 font-medium">
+                  <div className="mt-3">
+                    <div className="flex justify-between text-[10px] text-slate-500 mb-1 font-medium">
                       <span>Progresso</span>
                       <span>
                         {incident.status === 'PENDENTE' ? '0%' :
@@ -554,13 +564,13 @@ export default function TeamPanel() {
                          incident.status === 'EM_EXECUCAO' ? '75%' : '0%'}
                       </span>
                     </div>
-                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
                       <div 
-                        className={`h-full transition-all duration-500 ${
-                          incident.status === 'PENDENTE' ? 'bg-slate-400 w-0' :
-                          incident.status === 'EM_TRANSITO' ? 'bg-blue-500 w-1/4' :
-                          incident.status === 'NO_LOCAL' ? 'bg-orange-500 w-2/4' :
-                          incident.status === 'EM_EXECUCAO' ? 'bg-blue-600 w-3/4' : 'bg-slate-400 w-0'
+                        className={`h-full transition-all duration-500 rounded-full ${
+                          incident.status === 'PENDENTE' ? 'bg-slate-600 w-0' :
+                          incident.status === 'EM_TRANSITO' ? 'bg-sky-500 w-1/4' :
+                          incident.status === 'NO_LOCAL' ? 'bg-amber-500 w-2/4' :
+                          incident.status === 'EM_EXECUCAO' ? 'bg-sky-500 w-3/4' : 'bg-slate-600 w-0'
                         }`}
                       />
                     </div>
@@ -569,35 +579,38 @@ export default function TeamPanel() {
               </div>
             </>
           ) : (
-            <p className="text-slate-500 p-6 text-center">Nenhuma ocorrência atribuída.</p>
+            <p className="text-slate-600 text-sm p-6 text-center">Nenhuma ocorrência atribuída.</p>
           )}
         </div>
       </div>
 
       {/* FILA DE OCORRÊNCIAS */}
       {queuedIncidents.length > 0 && (
-        <div className="mt-8 relative z-10 corporate-card p-6">
-          <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800 mb-4">
-            📋 Fila de Ocorrências
-            <span className="bg-blue-50 text-blue-600 border border-blue-200 text-xs px-2 py-1 rounded-full">{queuedIncidents.length}</span>
+        <div className="mt-6 relative z-10 card-dark p-5">
+          <h2 className="text-sm font-semibold flex items-center gap-2 text-slate-200 mb-3">
+            <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Fila de Ocorrências
+            <span className="bg-sky-500/15 text-sky-400 text-[10px] px-1.5 py-0.5 rounded font-semibold">{queuedIncidents.length}</span>
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {queuedIncidents.map((queued: any) => (
-              <div key={queued.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex justify-between items-center transition-colors hover:bg-slate-100 cursor-default">
+              <div key={queued.id} className="bg-white/[0.02] border border-white/[0.04] rounded-lg p-3.5 flex justify-between items-center transition-all hover:bg-white/[0.04]">
                 <div>
-                  <h3 className="font-bold text-slate-800">{queued.title}</h3>
-                  <p className="text-sm text-slate-600">{queued.address}</p>
+                  <h3 className="font-semibold text-sm text-slate-200">{queued.title}</h3>
+                  <p className="text-xs text-slate-500">{queued.address}</p>
                 </div>
                 <div className="text-right flex flex-col items-end gap-1">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${
-                    queued.priority === 'CRITICAL' ? 'bg-red-50 text-red-600 border border-red-200' :
-                    queued.priority === 'HIGH' ? 'bg-orange-50 text-orange-600 border border-orange-200' :
-                    queued.priority === 'NORMAL' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
-                    'bg-slate-100 text-slate-600 border border-slate-200'
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                    queued.priority === 'CRITICAL' ? 'bg-red-500/10 text-red-400' :
+                    queued.priority === 'HIGH' ? 'bg-orange-500/10 text-orange-400' :
+                    queued.priority === 'NORMAL' ? 'bg-sky-500/10 text-sky-400' :
+                    'bg-white/[0.04] text-slate-400'
                   }`}>
                     {queued.priority}
                   </span>
-                  <span className="text-xs text-slate-500 font-medium tracking-wide">Aguardando</span>
+                  <span className="text-[10px] text-slate-600 font-medium">Aguardando</span>
                 </div>
               </div>
             ))}
@@ -606,7 +619,7 @@ export default function TeamPanel() {
       )}
 
       {/* CHAT */}
-      <div className="mt-8 relative z-10 corporate-card-dark p-6">
+      <div className="mt-6 relative z-10 card-dark p-5">
         <ChatPanel
           channel={incident ? incident.id : `equipe-${usuario.equipeId}`}
           senderName={usuario.nome}

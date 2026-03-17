@@ -1,0 +1,9 @@
+-- Execute este script no SQL Editor do seu painel Supabase para adicionar as colunas que estão faltando na tabela "team"
+
+ALTER TABLE "public"."team" 
+ADD COLUMN IF NOT EXISTS "vehicle" text,
+ADD COLUMN IF NOT EXISTS "members" integer DEFAULT 1,
+ADD COLUMN IF NOT EXISTS "phone" text;
+
+-- Isso permitirá que o sistema salve o 'veículo' que atualmente fica aparecendo como 'Sem veículo', 
+-- além dos campos de 'membros' e 'telefone' que também são usados pela interface de equipes.

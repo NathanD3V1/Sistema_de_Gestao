@@ -303,7 +303,7 @@ export default function TeamPanel() {
             </div>
             <div>
               <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Veículo</p>
-              <p className="text-slate-200 font-semibold text-sm mt-0.5">{usuario.equipeId === 'eqp-1' ? 'Fiat Strada - OEX-9090' : usuario.equipeId === 'eqp-2' ? 'Ford Ranger - ABC-1234' : usuario.equipeId === 'eqp-3' ? 'Chevrolet S10 - XYZ-5678' : 'Não atribuído'}</p>
+              <p className="text-slate-200 font-semibold text-sm mt-0.5">{usuario.vehicle || 'Não atribuído'}</p>
             </div>
             <div>
               <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Status</p>

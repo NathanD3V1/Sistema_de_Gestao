@@ -333,6 +333,9 @@ export async function dbCreateTeam(team: any): Promise<TeamJson> {
       company_id: dbCompanyId,
       status: team.status || 'AVAILABLE',
       location: team.location || null,
+      vehicle: team.vehicle || null,
+      members: team.members || 1,
+      phone: team.phone || null,
     };
     
     const { data, error } = await supabaseAdmin
@@ -361,6 +364,9 @@ export async function dbUpdateTeam(id: string, data: any): Promise<TeamJson | nu
     if (data.matricula !== undefined) updateData.matricula = data.matricula;
     if (data.status !== undefined) updateData.status = data.status;
     if (data.location !== undefined) updateData.location = data.location;
+    if (data.vehicle !== undefined) updateData.vehicle = data.vehicle;
+    if (data.members !== undefined) updateData.members = data.members;
+    if (data.phone !== undefined) updateData.phone = data.phone;
     
     const { data: result, error } = await supabaseAdmin
       .from('team')
@@ -574,6 +580,9 @@ function convertDbTeamToJson(db: any): TeamJson {
     companyId: db.company_id,
     status: db.status,
     location: db.location,
+    vehicle: db.vehicle,
+    members: db.members,
+    phone: db.phone,
   };
 }
 

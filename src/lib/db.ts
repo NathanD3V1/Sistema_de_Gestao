@@ -556,13 +556,16 @@ function convertDbIncidentToJson(db: any): IncidentJson {
     'CANCELLED': 'PENDENTE',
   };
   
+  // Garante que o ID da equipe seja convertido para o formato do frontend se for um UUID conhecido
+  const frontendTeamId = convertDbIdToFrontend(db.team_id);
+  
   return {
     id: db.id,
-    teamId: convertDbIdToFrontend(db.team_id) || '',
+    teamId: frontendTeamId || '',
     title: db.title,
     address: db.address,
     priority: db.priority,
-    status: statusMap[db.status] || db.status || 'PENDENTE',
+    status: (statusMap[db.status] || db.status || 'PENDENTE') as IncidentStatusJson,
     departedAt: db.departed_at,
     arrivedAt: db.arrived_at,
     startedAt: db.started_at,

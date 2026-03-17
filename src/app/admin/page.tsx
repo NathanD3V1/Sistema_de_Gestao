@@ -550,17 +550,41 @@ export default function Page() {
   // Obter equipes para exibição (diretamente da API do Supabase)
   const displayTeams = useMemo(() => {
     const teams = teamsData ?? [];
-    // Calcular status dinâmico baseado em incidentes ativos
-    const activeTeamIds = new Set(
-      (data ?? [])
-        .filter((i: IncidentServer) => i.status !== 'CONCLUIDO')
-        .map((i: IncidentServer) => i.teamId)
-    );
+    const rawIncidents = data ?? [];
     
-    return teams.map((team) => ({
-      ...team,
-      status: activeTeamIds.has(team.id) || activeTeamIds.has(team.name) ? 'BUSY' : team.status,
-    }));
+    // Calcular status dinâmico baseado em incidentes ativos
+    const activeTeamIdentifiers = new Set<string>();
+    
+    rawIncidents
+      .filter((i: IncidentServer) => i.status !== 'CONCLUIDO')
+      .forEach((i: IncidentServer) => {
+        if (i.teamId) activeTeamIdentifiers.add(i.teamId.toLowerCase());
+      });
+    
+    // Mapeamento reverso para equipes legadas / de teste
+    const reverseLegacyMap: Record<string, string> = {
+      'Equipe Alpha': 'eqp-1',
+      'Equipe Beta': 'eqp-2',
+      'Equipe Gamma': 'eqp-3',
+      'Equipe Delta': 'eqp-4',
+      'Equipe Epsilon': 'eqp-5',
+    };
+    
+    return teams.map((team) => {
+      const legacyId = reverseLegacyMap[team.name];
+      const teamNameLower = team.name.toLowerCase();
+      const teamIdLower = team.id.toLowerCase();
+      
+      // Verifica se a equipe está ocupada por ID, Nome ou ID Legado
+      const isBusy = activeTeamIdentifiers.has(teamIdLower) || 
+                     activeTeamIdentifiers.has(teamNameLower) || 
+                     (legacyId && activeTeamIdentifiers.has(legacyId.toLowerCase()));
+                     
+      return {
+        ...team,
+        status: isBusy ? 'BUSY' : team.status,
+      };
+    });
   }, [teamsData, data]);
 
   // Chart data calculation

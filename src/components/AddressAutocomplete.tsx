@@ -15,6 +15,7 @@ interface AddressAutocompleteProps {
   onCoordsChange?: (coords: [number, number] | null) => void;
   placeholder?: string;
   className?: string;
+  inputClassName?: string;
 }
 
 export function AddressAutocomplete({
@@ -23,6 +24,7 @@ export function AddressAutocomplete({
   onCoordsChange,
   placeholder = 'Digite o endereço...',
   className = '',
+  inputClassName = '',
 }: AddressAutocompleteProps) {
   const [query, setQuery] = useState(value);
   const [results, setResults] = useState<AddressResult[]>([]);
@@ -127,7 +129,7 @@ export function AddressAutocomplete({
           }
         }}
         placeholder={placeholder}
-        className="w-full bg-slate-900 text-white border border-slate-700 rounded px-3 py-2"
+        className={inputClassName || "w-full bg-slate-900 text-white border border-slate-700 rounded px-3 py-2"}
         autoComplete="off"
       />
 

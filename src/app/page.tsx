@@ -7,13 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { HiOutlineBolt, HiOutlineUser, HiOutlineLockClosed, HiOutlineArrowRight } from "react-icons/hi2";
 
-// Mock Users (matching domain logic)
-const MOCK_USERS = [
-  { matricula: "1001", name: "Equipe Alpha", cargo: "EQUIPE", equipeId: "eqp-1" },
-  { matricula: "1002", name: "Equipe Bravo", cargo: "EQUIPE", equipeId: "eqp-2" },
-  { matricula: "0001", name: "Administrador Central", cargo: "ADMIN" },
-];
-
 export default function LoginPage() {
   const [matricula, setMatricula] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,22 +28,32 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
-      const user = MOCK_USERS.find((u) => u.matricula === matricula.trim());
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matricula: matricula.trim() }),
+      });
 
-      if (user) {
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        const user = json.data;
         localStorage.setItem("usuarioLogado", JSON.stringify(user));
         toast.success(`Bem-vindo, ${user.name}!`);
         router.push(user.cargo === "ADMIN" ? "/admin" : "/team");
       } else {
-        toast.error("Matrícula não encontrada. Tente 1001, 1002 ou 0001.");
+        toast.error(json.error || "Matrícula não encontrada.");
         setLoading(false);
       }
-    }, 800);
+    } catch (err) {
+      toast.error("Erro ao conectar com o servidor.");
+      setLoading(false);
+    }
   };
 
   if (carregando) {

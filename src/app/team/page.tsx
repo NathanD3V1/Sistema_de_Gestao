@@ -307,8 +307,10 @@ export default function TeamPanel() {
             </div>
             <div>
               <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Status</p>
-              <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-400">
-                Disponível
+              <span className={`inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-semibold ${
+                incident ? 'bg-amber-500/15 text-amber-400' : 'bg-emerald-500/15 text-emerald-400'
+              }`}>
+                {incident ? 'Em Ocorrência' : 'Disponível'}
               </span>
             </div>
             <div>

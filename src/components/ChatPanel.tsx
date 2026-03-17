@@ -78,7 +78,14 @@ export function ChatPanel({ channel, senderName, title = 'Chat', className = '' 
           messages.map((m) => (
             <div key={m.id} className="flex flex-col gap-0.5">
               <div className="flex justify-between items-baseline">
-                <span className="font-semibold text-sm text-blue-300">{m.senderName}</span>
+                <span className="font-semibold text-sm text-blue-300">
+                  {m.senderName === 'eqp-1' ? 'Equipe Alpha' : 
+                   m.senderName === 'eqp-2' ? 'Equipe Beta' : 
+                   m.senderName === 'eqp-3' ? 'Equipe Gamma' : 
+                   m.senderName === 'eqp-4' ? 'Equipe Delta' : 
+                   m.senderName === 'eqp-5' ? 'Equipe Epsilon' : 
+                   m.senderName}
+                </span>
                 <span className="text-xs text-gray-500">
                   {new Date(m.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </span>

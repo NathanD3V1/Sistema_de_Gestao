@@ -200,10 +200,20 @@ export default function Page() {
     const raw = data ?? [];
     const teams = teamsData ?? [];
     const teamById = new Map(teams.map((t) => [t.id, t.name] as const));
+    
+    // Fallback para ocorrências legadas / de teste onde o teamId foi salvo como eqp-X e as equipes antigas foram apagadas
+    const legacyMap: Record<string, string> = {
+      'eqp-1': 'Equipe Alpha',
+      'eqp-2': 'Equipe Beta',
+      'eqp-3': 'Equipe Gamma',
+      'eqp-4': 'Equipe Delta',
+      'eqp-5': 'Equipe Epsilon',
+    };
+
     return raw.map((i) => ({
       ...i,
       uiStatus: serverToAdmin[i.status],
-      teamLabel: teamById.get(i.teamId) ?? i.teamId,
+      teamLabel: teamById.get(i.teamId) ?? legacyMap[i.teamId] ?? i.teamId,
     }));
   }, [data, teamsData]);
 
@@ -549,7 +559,7 @@ export default function Page() {
     
     return teams.map((team) => ({
       ...team,
-      status: activeTeamIds.has(team.id) ? 'BUSY' : team.status,
+      status: activeTeamIds.has(team.id) || activeTeamIds.has(team.name) ? 'BUSY' : team.status,
     }));
   }, [teamsData, data]);
 

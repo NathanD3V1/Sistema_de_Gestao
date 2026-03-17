@@ -57,6 +57,8 @@ export async function POST(request: NextRequest) {
         nome: team.name,
         cargo: 'EQUIPE',
         equipeId: team.id,
+        vehicle: team.vehicle,
+        phone: team.phone,
       },
     });
   } catch (error: any) {

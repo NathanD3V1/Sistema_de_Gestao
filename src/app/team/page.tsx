@@ -50,6 +50,18 @@ export default function TeamPanel() {
     { refreshInterval: 3000 }
   );
 
+  // 🔹 Buscar detalhes da própria equipe para ter dados atualizados (veículo, etc)
+  const {
+    data: teamDataResponse,
+    mutate: mutateTeam
+  } = useSWR(
+    usuario ? `/api/teams?id=${usuario.equipeId}` : null,
+    fetcher,
+    { refreshInterval: 10000 }
+  );
+
+  const teamData = teamDataResponse?.success ? teamDataResponse.data : null;
+
   // Consider the current incident the first active one, or the next pending one.
   const activeOrPendingIncidents = incidents?.filter((i: any) => i.status !== 'CONCLUIDO') || [];
   const incident = activeOrPendingIncidents[0] ?? null;
@@ -299,11 +311,11 @@ export default function TeamPanel() {
 
             <div className="pt-2 border-t border-white/[0.04]">
               <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Equipe</p>
-              <p className="text-slate-200 font-semibold text-sm mt-0.5">{usuario.equipeId === 'eqp-1' ? 'Equipe A' : usuario.equipeId === 'eqp-2' ? 'Equipe B' : usuario.equipeId === 'eqp-3' ? 'Equipe C' : usuario.equipeId}</p>
+              <p className="text-slate-200 font-semibold text-sm mt-0.5">{teamData?.name || usuario.name || usuario.equipeId}</p>
             </div>
             <div>
               <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Veículo</p>
-              <p className="text-slate-200 font-semibold text-sm mt-0.5">{usuario.vehicle || 'Não atribuído'}</p>
+              <p className="text-slate-200 font-semibold text-sm mt-0.5">{teamData?.vehicle || usuario.vehicle || 'Não atribuído'}</p>
             </div>
             <div>
               <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Status</p>
@@ -315,7 +327,7 @@ export default function TeamPanel() {
             </div>
             <div>
               <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Contato</p>
-              <p className="text-slate-300 font-medium text-sm mt-0.5">(11) 99999-0001</p>
+              <p className="text-slate-300 font-medium text-sm mt-0.5">{teamData?.phone || usuario.phone || '(11) 99999-0001'}</p>
             </div>
           </div>
         </div>

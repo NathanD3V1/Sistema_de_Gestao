@@ -444,7 +444,7 @@ export default function Page() {
   // Abrir modal de nova equipe
   function handleOpenNewTeam() {
     setTeamForm({
-      id: `eqp-${Date.now()}`,
+      id: crypto.randomUUID(),
       name: '',
       matricula: '',
       status: 'AVAILABLE',

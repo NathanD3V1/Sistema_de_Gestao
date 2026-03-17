@@ -209,15 +209,24 @@ export default function Page() {
     [incidents, selectedId]
   );
 
+  // Estado para quando clicamos em chat de uma equipe sem ocorrência
+  const [selectedTeamChat, setSelectedTeamChat] = useState<string | null>(null);
+
+  // Referência para o painel de chat rolar a página
+  const chatRef = React.useRef<HTMLDivElement>(null);
+
   // Chat: usar o canal da ocorrência quando selecionada, senão usar o canal da equipe
   const chatCanal = useMemo(() => {
     if (selectedIncident) {
       // Se há uma ocorrência selecionada, usar o ID da ocorrência como canal
       return selectedIncident.id;
     }
-    // Senão, usar o canal da equipe padrão
-    return 'equipe-eqp-1';
-  }, [selectedIncident]);
+    if (selectedTeamChat) {
+      return `equipe-${selectedTeamChat}`;
+    }
+    // Senão, usar um canal geral
+    return 'geral';
+  }, [selectedIncident, selectedTeamChat]);
 
   // Lista filtrada
   const filteredIncidents = useMemo(() => {
@@ -771,7 +780,10 @@ export default function Page() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        onClick={() => setSelectedId(incident.id)}
+                        onClick={() => {
+                          setSelectedId(incident.id);
+                          setSelectedTeamChat(null);
+                        }}
                         className={`group p-3.5 rounded-xl border cursor-pointer transition-all ${
                           selectedId === incident.id
                             ? 'bg-sky-500/[0.08] border-sky-500/30'
@@ -986,7 +998,15 @@ export default function Page() {
                       const teamIncident = incidents.find(i => i.teamId === team.id && i.status !== 'CONCLUIDO');
                       if (teamIncident) {
                         setSelectedId(teamIncident.id);
+                        setSelectedTeamChat(null);
+                      } else {
+                        setSelectedId(null);
+                        setSelectedTeamChat(team.id);
                       }
+                      // Scroll suave até o chat
+                      setTimeout(() => {
+                        chatRef.current?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
                     }}
                     className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600/15 hover:bg-sky-600/25 text-sky-400 py-1.5 rounded-lg transition-all text-xs font-medium"
                   >
@@ -1016,17 +1036,18 @@ export default function Page() {
         </div>
 
         {/* Chat */}
-        <div className="mt-6 mb-8 card-dark p-5">
+        <div ref={chatRef} className="mt-6 mb-8 card-dark p-5 scroll-mt-24">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
               <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-              Chat com a Equipe
-              {selectedIncident && (
-                <span className="text-xs font-normal text-slate-500 ml-1">
-                  — {selectedIncident.title}
-                </span>
+              {selectedIncident ? (
+                <>Chat da Ocorrência <span className="text-xs font-normal text-slate-500 ml-1">— {selectedIncident.title}</span></>
+              ) : selectedTeamChat ? (
+                <>Chat com a Equipe <span className="text-xs font-normal text-slate-500 ml-1">— {displayTeams.find(t => t.id === selectedTeamChat)?.name}</span></>
+              ) : (
+                'Chat Geral'
               )}
             </h2>
           </div>
@@ -1035,7 +1056,7 @@ export default function Page() {
             key={chatCanal}
             channel={chatCanal}
             senderName="Central"
-            title="Chat com a Equipe"
+            title="Painel de Comunicação"
           />
         </div>
       </div>

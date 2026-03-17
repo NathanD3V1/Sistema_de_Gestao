@@ -580,9 +580,15 @@ export default function Page() {
                      activeTeamIdentifiers.has(teamNameLower) || 
                      (legacyId && activeTeamIdentifiers.has(legacyId.toLowerCase()));
                      
+      // Se não há incidente ativo, mas o status no banco é de "ocupado", força para AVAILABLE
+      // Isso resolve o problema de status "preso" após exclusão de ocorrências
+      const finalStatus = isBusy 
+        ? 'BUSY' 
+        : (['BUSY', 'IN_TRANSIT', 'ON_SITE', 'ON_CALL'].includes(team.status) ? 'AVAILABLE' : team.status);
+                     
       return {
         ...team,
-        status: isBusy ? 'BUSY' : team.status,
+        status: finalStatus,
       };
     });
   }, [teamsData, data]);

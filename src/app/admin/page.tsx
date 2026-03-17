@@ -292,7 +292,8 @@ export default function Page() {
     });
 
     if (!res.ok) {
-      toast.error('Falha ao criar ocorrência');
+      const errorData = await res.json().catch(() => ({}));
+      toast.error(errorData.error || 'Falha ao criar ocorrência');
       return;
     }
 
@@ -344,7 +345,8 @@ export default function Page() {
     });
 
     if (!res.ok) {
-      toast.error('Falha ao atualizar ocorrência');
+      const errorData = await res.json().catch(() => ({}));
+      toast.error(errorData.error || 'Falha ao atualizar ocorrência');
       return;
     }
 
@@ -580,11 +582,12 @@ export default function Page() {
                      activeTeamIdentifiers.has(teamNameLower) || 
                      (legacyId && activeTeamIdentifiers.has(legacyId.toLowerCase()));
                      
-      // Se não há incidente ativo, mas o status no banco é de "ocupado", força para AVAILABLE
-      // Isso resolve o problema de status "preso" após exclusão de ocorrências
+      // Se não há incidente ativo, mas o status no banco é de "ocupado" (status manual/stale), força para AVAILABLE
+      // Isso resolve o problema de status "preso" após exclusão de todas as ocorrências
+      // Mas manteve-se o status original caso não seja um dos status de "em serviço"
       const finalStatus = isBusy 
         ? 'BUSY' 
-        : (['BUSY', 'IN_TRANSIT', 'ON_SITE', 'ON_CALL'].includes(team.status) ? 'AVAILABLE' : team.status);
+        : (['BUSY', 'IN_TRANSIT', 'ON_SITE', 'ON_CALL', 'EM_TRANSITO', 'NO_LOCAL', 'EM_EXECUCAO'].includes(team.status.toUpperCase()) ? 'AVAILABLE' : team.status);
                      
       return {
         ...team,

@@ -92,7 +92,7 @@ export default function LoginPage() {
             transition={{ delay: 0.3 }}
             className="text-3xl font-bold text-white tracking-tight"
           >
-            SGO <span className="text-sky-500">v2</span>
+            SGO
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}

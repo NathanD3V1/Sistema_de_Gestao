@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbGetIncidents, dbCreateIncident } from '@/lib/db';
+import { cookies } from 'next/headers';
+import { decrypt } from '@/lib/session';
 
 export const runtime = 'nodejs';
 export const revalidate = 0;
@@ -19,8 +21,17 @@ interface IncidentInput {
 }
 
 export async function GET(req: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
   const { searchParams } = new URL(req.url);
-  const teamId = searchParams.get('teamId') || searchParams.get('equipeId');
+  // Se for equipe, obriga a ver só o próprio ID (Prevenção de IDOR)
+  let teamId = searchParams.get('teamId') || searchParams.get('equipeId');
+  if (session.cargo === 'EQUIPE') {
+    teamId = session.equipeId || null; 
+  }
 
   try {
     const list = await dbGetIncidents(teamId || undefined);
@@ -39,6 +50,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session || session.cargo !== 'ADMIN') {
+    return NextResponse.json({ error: 'Acesso negado. Apenas admins podem criar ocorrências.' }, { status: 403 });
+  }
+
   try {
     const body = await req.json() as IncidentInput;
 

@@ -1,10 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { dbGetIncidentById, dbUpdateIncident, dbDeleteIncident } from '@/lib/db';
+import { cookies } from 'next/headers';
+import { decrypt } from '@/lib/session';
 
 export const runtime = 'nodejs';
 export const revalidate = 0;
 
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
   const { id } = await params;
   
   try {
@@ -12,6 +19,11 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
     if (!item) {
       return NextResponse.json({ error: 'Não encontrado' }, { status: 404 });
     }
+
+    if (session.cargo === 'EQUIPE' && item.teamId !== session.equipeId) {
+      return NextResponse.json({ error: 'Acesso negado a esta ocorrência' }, { status: 403 });
+    }
+
     return NextResponse.json(item);
   } catch (error: any) {
     console.error('Erro ao buscar ocorrência:', error);
@@ -22,7 +34,14 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session || session.cargo !== 'ADMIN') {
+    return NextResponse.json({ error: 'Acesso negado. Apenas admins podem editar.' }, { status: 403 });
+  }
+
   const { id } = await params;
   
   try {
@@ -43,7 +62,14 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 }
 
-export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session || session.cargo !== 'ADMIN') {
+    return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
+  }
+
   const { id } = await params;
   
   try {

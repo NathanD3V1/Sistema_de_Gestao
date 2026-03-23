@@ -3,62 +3,109 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { HiOutlineBolt, HiOutlineUser, HiOutlineLockClosed, HiOutlineArrowRight } from "react-icons/hi2";
+
+// 1. Tipagem forte para garantir previsibilidade e IntelliSense
+interface Usuario {
+  matricula: string;
+  name: string;
+  nome: string;
+  cargo: "ADMIN" | "EQUIPE";
+  equipeId?: string;
+  vehicle?: string;
+  phone?: string;
+}
+
+interface LoginResponse {
+  success: boolean;
+  error?: string;
+  data?: Usuario;
+}
 
 export default function LoginPage() {
   const [matricula, setMatricula] = useState("");
   const [loading, setLoading] = useState(false);
-  const [carregando, setCarregando] = useState(true);
+  const [carregandoAuth, setCarregandoAuth] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const saved = localStorage.getItem("usuarioLogado");
-    if (saved) {
-      try {
-        const user = JSON.parse(saved);
-        router.push(user.cargo === "ADMIN" ? "/admin" : "/team");
-      } catch {
-        localStorage.removeItem("usuarioLogado");
-        setCarregando(false);
+    // 2. Isolado para tratamento seguro do LocalStorage
+    const verificarSessao = () => {
+      const saved = localStorage.getItem("usuarioLogado");
+      if (saved) {
+        try {
+          const user = JSON.parse(saved) as Usuario;
+          // Validar se o parse resultou no objeto experado
+          if (user && user.cargo) {
+            router.replace(user.cargo === "ADMIN" ? "/admin" : "/team");
+            return; // Se estiver logado, nem renderiza o form (evita flash)
+          }
+        } catch (error) {
+          console.error("Sessão corrompida, limpando...", error);
+          localStorage.removeItem("usuarioLogado");
+        }
       }
-    } else {
-      setCarregando(false);
-    }
+      setCarregandoAuth(false);
+    };
+
+    verificarSessao();
   }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const matriculaFormatada = matricula.trim();
+    if (!matriculaFormatada) {
+      toast.error("Por favor, insira uma matrícula válida.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matricula: matricula.trim() }),
+        body: JSON.stringify({ matricula: matriculaFormatada }),
       });
 
-      const json = await res.json();
+      // 3. Tratamento defensivo primeiro (se o servidor cair com status 500 ou HTML error)
+      if (!res.ok) {
+        let errorMessage = "Erro na comunicação com o servidor.";
+        try {
+          // Tenta pegar o erro mapeado pelo backend
+          const errorData = await res.json();
+          errorMessage = errorData?.error || errorMessage;
+        } catch {
+          // Fallback se a resposta não for um JSON válido
+        }
+        throw new Error(errorMessage);
+      }
 
-      if (res.ok && json.success) {
+      const json = (await res.json()) as LoginResponse;
+
+      if (json.success && json.data) {
         const user = json.data;
         localStorage.setItem("usuarioLogado", JSON.stringify(user));
-        toast.success(`Bem-vindo, ${user.name}!`);
+        toast.success(`Bem-vindo, ${user.name || user.nome}!`);
         router.push(user.cargo === "ADMIN" ? "/admin" : "/team");
       } else {
-        toast.error(json.error || "Matrícula não encontrada.");
-        setLoading(false);
+        throw new Error(json.error || "Matrícula não encontrada.");
       }
-    } catch (err) {
-      toast.error("Erro ao conectar com o servidor.");
+    } catch (err: unknown) {
+      // 4. Tipagem segura de erro no bloco catch
+      const mensagemErro = err instanceof Error ? err.message : "Erro desconhecido ao conectar.";
+      toast.error(mensagemErro);
       setLoading(false);
     }
   };
 
-  if (carregando) {
+  // Enquanto verifica o localStorage na montagem
+  if (carregandoAuth) {
     return (
-      <div className="min-h-screen bg-[#0a0e1a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0e1a] flex items-center justify-center" aria-busy="true" aria-label="Carregando autenticação">
         <div className="w-10 h-10 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -113,7 +160,8 @@ export default function LoginPage() {
         >
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              {/* 5. Correção de Acessibilidade (a11y) - Adicionado htmlFor e id */}
+              <label htmlFor="input-matricula" className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1 cursor-pointer">
                 Matrícula do Usuário
               </label>
               <div className="relative group">
@@ -121,6 +169,7 @@ export default function LoginPage() {
                   <HiOutlineUser className="h-5 w-5 text-slate-500 group-focus-within:text-sky-500 transition-colors" />
                 </div>
                 <input
+                  id="input-matricula"
                   type="text"
                   required
                   value={matricula}
@@ -137,6 +186,7 @@ export default function LoginPage() {
               disabled={loading}
               type="submit"
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-sky-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base tracking-wide"
+              aria-label={loading ? "Autenticando..." : "Acessar Sistema"}
             >
               {loading ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -164,7 +214,7 @@ export default function LoginPage() {
           transition={{ delay: 0.7 }}
           className="text-center text-slate-600 text-[11px] mt-8 font-medium"
         >
-          &copy; 2026 Centro de Coordenação e Comando
+          &copy; {new Date().getFullYear()} Centro de Coordenação e Comando
         </motion.p>
       </motion.div>
     </div>

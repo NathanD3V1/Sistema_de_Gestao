@@ -257,7 +257,8 @@ export default function TeamPanel() {
           </p>
         </div>
         <button
-          onClick={() => {
+          onClick={async () => {
+            await fetch('/api/auth/logout');
             localStorage.removeItem('usuarioLogado');
             router.push('/');
           }}

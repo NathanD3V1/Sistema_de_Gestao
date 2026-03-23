@@ -1,15 +1,31 @@
-import { NextResponse } from 'next/server';
-import { dbUpdateIncidentStatus } from '@/lib/db';
+import { NextRequest, NextResponse } from 'next/server';
+import { dbGetIncidentById, dbUpdateIncidentStatus } from '@/lib/db';
+import { cookies } from 'next/headers';
+import { decrypt } from '@/lib/session';
 
 export const runtime = 'nodejs';
 export const revalidate = 0;
 
 type Body = { status: string };
 
-export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
   const { id } = await params;
   
   try {
+    const item = await dbGetIncidentById(id);
+    if (!item) {
+      return NextResponse.json({ error: 'Não encontrado' }, { status: 404 });
+    }
+
+    if (session.cargo === 'EQUIPE' && item.teamId !== session.equipeId) {
+      return NextResponse.json({ error: 'Acesso negado a esta ocorrência' }, { status: 403 });
+    }
+
     const body = await req.json() as Body;
     
     if (!body?.status) {

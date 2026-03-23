@@ -1,15 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbGetTeams, dbCreateTeam, dbUpdateTeam, dbDeleteTeam } from '@/lib/db';
+import { cookies } from 'next/headers';
+import { decrypt } from '@/lib/session';
 
 export const runtime = 'nodejs';
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const id = searchParams.get('id');
 
+    // Mantenha apenas o ID restrito para EQUIPE (para não visualizarem outras equipes se não precisarem)
+    // Se precisarem ver todas para o mapa, não há problema em manter GET aberto.
+    // Mas vamos simplificar e permitir que equipes vejam as outras para fins de relatório ou chat
+    
     const teams = await dbGetTeams(status || undefined);
 
     // Filtrar por ID se fornecido
@@ -38,6 +49,13 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session || session.cargo !== 'ADMIN') {
+    return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
+  }
+
   try {
     const body = await request.json();
 
@@ -74,6 +92,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session || session.cargo !== 'ADMIN') {
+    return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
+  }
+
   try {
     const body = await request.json();
 
@@ -115,6 +140,13 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  
+  if (!session || session.cargo !== 'ADMIN') {
+    return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

@@ -857,7 +857,7 @@ export default function Page() {
                           <div className="flex-1 min-w-0">
                             <h3 className="font-medium text-sm mb-2 text-slate-200 group-hover:text-white transition-colors truncate flex items-center gap-2">
                               {incident.title}
-                              {differenceInMinutes(new Date(), new Date(incident.updatedAt)) < 15 && incident.uiStatus === 'PENDING' && (
+                              {incident.updatedAt && differenceInMinutes(new Date(), new Date(incident.updatedAt)) < 15 && incident.uiStatus === 'PENDING' && (
                                 <span className="bg-sky-500/20 text-sky-400 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider animate-pulse">
                                   Novo
                                 </span>
@@ -876,7 +876,10 @@ export default function Page() {
                           <div className="text-right ml-3 flex-shrink-0">
                             <p className="text-xs text-slate-400 font-medium">{incident.teamLabel}</p>
                             <p className="text-[10px] text-slate-500 mt-1 capitalize">
-                              {formatDistanceToNow(new Date(incident.updatedAt), { locale: ptBR, addSuffix: true }).replace('cerca de ', '')}
+                              {incident.updatedAt 
+                                ? formatDistanceToNow(new Date(incident.updatedAt), { locale: ptBR, addSuffix: true }).replace('cerca de ', '')
+                                : 'Sem data'
+                              }
                             </p>
                           </div>
                         </div>

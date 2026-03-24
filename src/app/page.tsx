@@ -31,28 +31,13 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // 2. Isolado para tratamento seguro do LocalStorage
-    const verificarSessao = () => {
-      setCarregandoAuth(true);
-      const saved = localStorage.getItem("usuarioLogado");
-      if (saved) {
-        try {
-          const user = JSON.parse(saved) as Usuario;
-          // Validar se o parse resultou no objeto esperado
-          if (user && user.cargo) {
-            router.replace(user.cargo === "ADMIN" ? "/admin" : "/team");
-            return; // Se estiver logado, nem renderiza o form (evita flash)
-          }
-        } catch (error) {
-          console.error("Sessão corrompida, limpando...", error);
-          localStorage.removeItem("usuarioLogado");
-        }
-      }
-      setCarregandoAuth(false);
-    };
-
-    verificarSessao();
-  }, [router]);
+    // Se o middleware permitiu o acesso à página de login, 
+    // significa que não há uma sessão válida no servidor.
+    // Portanto, removemos dados antigos do localStorage para evitar estados inconsistentes
+    // e prevenir o loop de redirecionamento infinito.
+    localStorage.removeItem("usuarioLogado");
+    setCarregandoAuth(false);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

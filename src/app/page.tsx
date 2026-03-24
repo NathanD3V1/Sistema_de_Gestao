@@ -27,17 +27,18 @@ interface LoginResponse {
 export default function LoginPage() {
   const [matricula, setMatricula] = useState("");
   const [loading, setLoading] = useState(false);
-  const [carregandoAuth, setCarregandoAuth] = useState(true);
+  const [carregandoAuth, setCarregandoAuth] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     // 2. Isolado para tratamento seguro do LocalStorage
     const verificarSessao = () => {
+      setCarregandoAuth(true);
       const saved = localStorage.getItem("usuarioLogado");
       if (saved) {
         try {
           const user = JSON.parse(saved) as Usuario;
-          // Validar se o parse resultou no objeto experado
+          // Validar se o parse resultou no objeto esperado
           if (user && user.cargo) {
             router.replace(user.cargo === "ADMIN" ? "/admin" : "/team");
             return; // Se estiver logado, nem renderiza o form (evita flash)

@@ -637,7 +637,7 @@ export default function Page() {
             onClick={async () => {
               await fetch('/api/auth/logout');
               localStorage.removeItem('usuarioLogado');
-              router.push('/');
+              window.location.href = '/';
             }}
               className="flex items-center gap-2 text-slate-400 text-sm hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-white/[0.04]"
             >

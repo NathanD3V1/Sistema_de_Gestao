@@ -79,26 +79,10 @@ export default function LoginPage() {
 
         // Validar se o parse resultou no objeto esperado
         if (user && user.cargo) {
-          router.replace(user.cargo === "ADMIN" ? "/admin" : "/team");
-          
-          // Fallback de segurança: se o middleware bloqueou o redirecionamento
-          // (ex: cookie expirou mas localStorage ainda existe), a navegação falha 
-          // no client-side e a página trava no spinner.
-          const timeout = setTimeout(() => {
-            console.warn("Navegação travada. Limpando sessão local...");
-            localStorage.removeItem("usuarioLogado");
-            setCarregandoAuth(false); // Esconde o spinner de carregamento de auth
-            setLoading(false); // Esconde o spinner do botão de login
-            toast.error("Erro de navegação. Por favor, tente novamente.");
-          }, 2500); // 2.5 segundos de timeout
-
-          // Limpar o timeout se a navegação for bem-sucedida e o componente for desmontado
-          // ou se o usuário tentar fazer login novamente.
-          // No contexto de um `handleLogin` assíncrono, o `clearTimeout` precisa ser gerenciado
-          // de forma que não interfira com a navegação bem-sucedida.
-          // Para este caso, o timeout é um fallback, então ele só deve agir se a navegação falhar.
-          // Não há um `return () => clearTimeout(timeout);` direto aqui como em `useEffect`.
-          // O timeout será limpo automaticamente se a página for redirecionada com sucesso.
+          // Forçar a navegação recarregando a página, o que garante que o middleware
+          // veja o novo cookie e redirecione corretamente, evitando problemas de cache
+          // do next/router e o problema do timeout disparar incorretamente.
+          window.location.href = user.cargo === "ADMIN" ? "/admin" : "/team";
         }
       } else {
         throw new Error(json.error || "Matrícula não encontrada.");

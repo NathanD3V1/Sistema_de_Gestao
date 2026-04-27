@@ -260,7 +260,7 @@ export default function TeamPanel() {
           onClick={async () => {
             await fetch('/api/auth/logout');
             localStorage.removeItem('usuarioLogado');
-            router.push('/');
+            window.location.href = '/';
           }}
           className="text-xs text-slate-500 hover:text-red-400 transition-colors flex items-center gap-1"
         >

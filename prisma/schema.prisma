@@ -85,7 +85,7 @@ model Incident {
   title           String
   description     String
   priority        Priority        @default(NORMAL)
-  status          IncidentStatus  @default(PENDING
+  status          IncidentStatus  @default(PENDING)
   company         Company         @relation("company_incidents", fields: [companyId], references: [id], onDelete: Cascade)
   companyId       String
   team            Team?           @relation("team_incidents", fields: [teamId], references: [id])

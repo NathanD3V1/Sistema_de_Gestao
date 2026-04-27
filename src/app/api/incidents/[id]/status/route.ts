@@ -8,13 +8,13 @@ export const revalidate = 0;
 
 type Body = { status: string };
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const cookie = cookies().get('sgo_session')?.value;
   const session = cookie ? await decrypt(cookie) : null;
   
   if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
 
-  const { id } = await params;
+  const { id } = params;
   
   try {
     const item = await dbGetIncidentById(id);

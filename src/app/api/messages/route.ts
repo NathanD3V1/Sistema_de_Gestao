@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { decrypt } from '@/lib/session';
 
 // Armazenamento em memória (para desenvolvimento; use Prisma em produção)
 type StoredMessage = { id: string; content: string; senderName: string; createdAt: string };
@@ -10,6 +12,10 @@ function getMessages(channel: string): StoredMessage[] {
 }
 
 export async function GET(request: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
   try {
     const { searchParams } = new URL(request.url);
     const channel = searchParams.get('channel') || searchParams.get('incidentId');
@@ -29,6 +35,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const cookie = cookies().get('sgo_session')?.value;
+  const session = cookie ? await decrypt(cookie) : null;
+  if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
   try {
     const body = await request.json();
     const channel = body.channel || body.incidentId;

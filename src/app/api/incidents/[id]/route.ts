@@ -6,13 +6,13 @@ import { decrypt } from '@/lib/session';
 export const runtime = 'nodejs';
 export const revalidate = 0;
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const cookie = cookies().get('sgo_session')?.value;
   const session = cookie ? await decrypt(cookie) : null;
   
   if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
 
-  const { id } = await params;
+  const { id } = params;
   
   try {
     const item = await dbGetIncidentById(id);
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const cookie = cookies().get('sgo_session')?.value;
   const session = cookie ? await decrypt(cookie) : null;
   
@@ -42,7 +42,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: 'Acesso negado. Apenas admins podem editar.' }, { status: 403 });
   }
 
-  const { id } = await params;
+  const { id } = params;
   
   try {
     const partial = await req.json();
@@ -62,7 +62,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const cookie = cookies().get('sgo_session')?.value;
   const session = cookie ? await decrypt(cookie) : null;
   
@@ -70,7 +70,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
   }
 
-  const { id } = await params;
+  const { id } = params;
   
   try {
     const deleted = await dbDeleteIncident(id);

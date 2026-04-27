@@ -31,10 +31,7 @@ import {
 // Forçando o uso do Supabase já que as variáveis de ambiente não estão sendo carregadas corretamente no build atual
 const USE_SUPABASE = true;
 
-console.log('--- SUPABASE CONFIGURATION CARREGADA DIR ---', { 
-  USE_SUPABASE, 
-  ENV_VAR: process.env.NEXT_PUBLIC_USE_SUPABASE 
-});
+
 
 /**
  * ==================== INCIDENTS ====================
@@ -48,7 +45,7 @@ export async function dbGetIncidents(teamId?: string): Promise<IncidentJson[]> {
     if (teamId) {
       // Converter teamId do formato frontend (eqp-1) para UUID do banco
       const dbTeamId = convertTeamIdToDb(teamId);
-      console.log('🔍 dbGetIncidents - Filtrando por teamId:', teamId, '-> UUID:', dbTeamId);
+
       query = query.eq('team_id', dbTeamId);
     }
     
@@ -105,7 +102,7 @@ export async function dbCreateIncident(incident: any): Promise<IncidentJson> {
     const dbCompanyId = toUuidString(incident.companyId || 'default', 'company_id');
     const dbTeamId = incident.teamId ? toUuidString(incident.teamId, 'team_id') : null;
     
-    console.log('🔍 dbCreateIncident - company_id:', dbCompanyId, 'team_id:', dbTeamId);
+
     
     const dbIncident = {
       id: incident.id,
@@ -324,7 +321,7 @@ export async function dbCreateTeam(team: any): Promise<TeamJson> {
     // Garante que company_id seja um UUID válido
     const dbCompanyId = toUuidString(team.companyId || 'default', 'company_id');
     
-    console.log('🔍 dbCreateTeam - id:', team.id, 'company_id:', dbCompanyId);
+
     
     const dbTeam = {
       id: team.id,

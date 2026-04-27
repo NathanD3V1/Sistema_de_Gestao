@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getIncidentById, patchIncident } from '@/lib/incidentStore';
-import { getTeamRanking, getSuggestedTeams, autoAssignTeam, TeamScore } from '@/lib/autoAssign';
+import { dbGetIncidentById, dbUpdateIncident } from '@/lib/db';
+import { getTeamRanking, getSuggestedTeams, TeamScore } from '@/lib/autoAssign';
 
 // Mock de equipes - em produção viria do banco
 const mockTeams = [
@@ -39,13 +39,13 @@ async function geocodeAddress(address: string): Promise<{ latitude: number; long
 // POST - Auto-atribuir equipe para a ocorrência
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id: incidentId } = await params;
+  const { id: incidentId } = params;
   
   try {
     // Buscar a ocorrência
-    const incident = await getIncidentById(incidentId);
+    const incident = await dbGetIncidentById(incidentId);
     if (!incident) {
       return NextResponse.json(
         { success: false, error: 'Ocorrência não encontrada' },
@@ -102,9 +102,9 @@ export async function POST(
     const bestTeam = ranking[0];
 
     // Atualizar a ocorrência com a equipe atribuída
-    const updated = await patchIncident(incidentId, {
+    const updated = await dbUpdateIncident(incidentId, {
       teamId: bestTeam.team.id,
-      status: 'PENDENTE' as any, // Mantém como pendente até equipe confirmar
+      status: 'PENDENTE',
     });
 
     if (!updated) {
@@ -144,9 +144,9 @@ export async function POST(
 // GET - Obter sugestões de equipes para a ocorrência (sem atribuir)
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id: incidentId } = await params;
+  const { id: incidentId } = params;
   const { searchParams } = new URL(request.url);
   
   // Parâmetros opcionais para filtrar sugestões
@@ -155,7 +155,7 @@ export async function GET(
   
   try {
     // Buscar a ocorrência
-    const incident = await getIncidentById(incidentId);
+    const incident = await dbGetIncidentById(incidentId);
     if (!incident) {
       return NextResponse.json(
         { success: false, error: 'Ocorrência não encontrada' },

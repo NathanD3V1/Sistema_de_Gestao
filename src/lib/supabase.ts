@@ -8,7 +8,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://ngofniiznj
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nb2ZuaWl6bmp2bW93Ym5wZ2phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMjkzMzIsImV4cCI6MjA4ODgwNTMzMn0.v0AtkEEmlLaHnw7Lys9zJWXAJmdSNAGQXQbNQXzAYKw';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nb2ZuaWl6bmp2bW93Ym5wZ2phIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzIyOTMzMiwiZXhwIjoyMDg4ODA1MzMyfQ.8ELZeOLxAECXM2zCJSXJvUA6PkAXpAi1v4QFlvgGhI4';
 
-console.log('🔗 Supabase URL:', SUPABASE_URL);
+
+
 
 // Cliente Supabase para uso no frontend (usa a chave pública)
 export const supabase = createClient(
